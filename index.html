@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>法律提案一覽・congr8ss</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <nav>
+    <div id="sitename">congr8ss</div>
+  </nav>
+  <header>
+    <h1>法律提案一覽</h1>
+  </header>
+</body>
+<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js"></script>
+<script src="js/util.js"></script>
+<script src="js/Proposal.js"></script>
+<script src="js/Meeting.js"></script>
+<script>
+
+var meetings = [];
+var meetingDictionary = {};
+var meetingTimeDictionary = {};
+var proposals = [];
+var proposalDictionaryByBill = {};
+
+var unique = function(key, needle) {
+  var dict = {};
+  for(var x of proposals) {
+    var vals = x[key];
+    if(vals == null)
+      continue;
+    if(!Array.isArray(vals))
+      vals = [vals];
+
+    //console.log(vals);
+    for(val of vals)
+      if(val != null && (needle === undefined || val.indexOf(needle) != -1))
+        dict[val] = true;
+  }
+  return Object.keys(dict);
+};
+var main = function() {
+  console.log(proposals.length, 'proposals');
+  console.log(unique('status'));
+  //console.log(unique('billProposer', '民主進步黨'));
+  //console.log(unique('billName'));
+
+  // find all unique bills
+  var bills = unique('relatedBills');
+  bills.sort();
+  console.log(bills.length, 'unique bills')
+
+  // build dictionaries of meetings
+  for(meeting of meetings) {
+    // meetingDictionary
+    var idString = meeting.id.numericID;
+    if(meetingDictionary[idString] == undefined) {
+      meetingDictionary[idString] = {};
+    }
+    if(meetingDictionary[idString][meeting.name] == undefined) {
+      meetingDictionary[idString][meeting.name] = [];
+    }
+    meetingDictionary[idString][meeting.name].push(meeting.date + 'T' + meeting.time.start + '-' + meeting.time.finish);
+
+    // meetingTimeDictionary
+    var timeString = meeting.time.start + '-' + meeting.time.finish;
+    if(meetingTimeDictionary[timeString] == undefined)
+      meetingTimeDictionary[timeString] = [];
+    meetingTimeDictionary[timeString].push(meeting.date + ':' + meeting.name);
+  }
+  meetingTimeDictionary = Utility.sortObject(meetingTimeDictionary);
+
+  // build dictionaries of proposals
+  
+
+  // output
+  var $table = $('<table id="proposals">').appendTo($('body'));
+  for(var i = 0; i < proposals.length; i++) {
+    $table.append(proposals[i].toRow(i + 1));
+  }
+}; // end of main()
+
+// load everything in
+// proposals: http://data.ly.gov.tw/getds.action?id=20
+// meetings: http://data.ly.gov.tw/getds.action?id=42
+var Q = queue(1);
+for(var i = 1; i <= 3; i++) {
+  Q.defer(Meeting.loader, 'meetings/p' + i + '.xml'); // JSON is unavailable
+}
+for(var i = 1; i <= 14; i++) {
+  Q.defer(Proposal.loader, 'proposals/p' + i + '.json');
+}
+Q.awaitAll(main);
+
+</script>
+</html>
