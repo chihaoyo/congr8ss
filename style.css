@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  font-family: 'Akkurat-Mono', 'PingFang TC', sans-serif;
+  font-family: 'Akkurat-Mono', 'PingFang TC', monospace;
   font-size: 11px;
 }
 table {
