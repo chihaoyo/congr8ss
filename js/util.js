@@ -1,6 +1,22 @@
 var Utility = {};
+Utility.unique = function(list, key, needle) {
+  var dict = {};
+  for(var x of list) {
+    var vals = x[key];
+    if(vals == null)
+      continue;
+    if(!Array.isArray(vals))
+      vals = [vals];
+
+    //console.log(vals);
+    for(val of vals)
+      if(val != null && (needle === undefined || val.indexOf(needle) != -1))
+        dict[val] = true;
+  }
+  return Object.keys(dict);
+};
 // sort object values according to keys
-Utility.sortObject = function(obj) {
+Utility.sortObjectByKey = function(obj) {
   var keys = Object.keys(obj);
   keys.sort();
   var temp = {};
