@@ -78,36 +78,39 @@ var Proposal = function(data) {
     }
   }*/
 };
+Proposal.prototype.lookupDictionaries = function() {
+  this.meetingFullInfo = [];
+  this.meetingDates = [];
+
+  var meetings = meetingDictionary[this.meetingID.numericID];
+  if(meetings == undefined) {
+    console.warn('找不到會議紀錄', this.meetingID.numericID);
+    this.warning = '⚠️';
+  }
+  else {
+    if(Object.keys(meetings).length > 1)
+      this.warning = '⚠️';
+    for(name in meetings) {
+      var datetimes = meetings[name];
+      this.meetingFullInfo.push(name + datetimes.join(','));
+
+      for(datetime of datetimes) {
+        datetime = datetime.split('T');
+        this.meetingDates.push(datetime[0]);
+      }
+    }
+  }
+  this.meetingDates = Utility.abbreviateDates(this.meetingDates);
+}
 Proposal.prototype.toString = function() {
   return this.original.bill;
 };
 Proposal.prototype.toRow = function(i) {
-  var meetings = meetingDictionary[this.meetingID.numericID];
-  var warning = '';
-  var meetingFullInfo = [];
-  var meetingDates = [];
-  if(meetings == undefined) {
-    console.warn('找不到會議紀錄', this.meetingID.numericID);
-  }
-  else {
-    warning = (Object.keys(meetings).length > 1 ? '⚠️' : '');
-    for(name in meetings) {
-      var datetimes = meetings[name];
-      meetingFullInfo.push(name + datetimes.join(','));
-
-      for(datetime of datetimes) {
-        datetime = datetime.split('T');
-        meetingDates.push(datetime[0]);
-      }
-    }
-  }
-  meetingDates = Utility.abbreviateDates(meetingDates);
-
   return '<tr>' +
     '<td>' + i + '</td>' +
     '<td class="debug">' + this.meetingID.numericID + '</td>' +
-    '<td class="debug">' + warning + meetingFullInfo.join(';') + '</td>' +
-    '<td>' + warning + meetingDates.join(',') + '</td>' +
+    '<td class="debug">' + (this.warning ? this.warning : '') + this.meetingFullInfo.join(';') + '</td>' +
+    '<td>' + (this.warning ? this.warning : '') + this.meetingDates.join(',') + '</td>' +
     '<td class="debug">' + this.original.bill + '</td>' +
     '<td class="debug">' + this.requests.join(';') + '</td>' +
     '<td>' + this.relatedBills.join(',') + '</td>' +
@@ -127,3 +130,13 @@ Proposal.loader = function(url, callback) {
     callback(null); // necessary for queue.js to work
   });
 };
+Proposal.sortByBill = function(p, q) {
+  var a = p.relatedBills.join(',');
+  var b = q.relatedBills.join(',');
+  if(a < b)
+    return -1;
+  else if(a > b)
+    return 1;
+  else
+    return 0;
+}
