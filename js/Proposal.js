@@ -18,7 +18,7 @@ var Proposal = function(data) {
   var requests = text.match(/「[^「]+」/g);
   for(var request of requests) {
     request = request.substr(1, request.length - 2);
-    var matchResult = /(.*(法|議事規則|組織規程|條例|條約|公約|稅則|通則|協定|協議|預算案|總預算|參與文書))(.*)/.exec(request);
+    var matchResult = /(.*(法律文件|法|議事規則|組織規程|條例|條約|公約|稅則|通則|協定|協議|預算案|總預算|參與文書))(.*)/.exec(request);
     var bill, detail;
     if(matchResult != null ){
       bill = matchResult[1];
@@ -129,9 +129,9 @@ Proposal.prototype.toRow = function(i) {
     //'<td class="debug">' + this.meetingID.numericID + '</td>' +
     //'<td class="debug">' + (this.warning ? this.warning : '') + this.meetingFullInfo.join(';') + '</td>' +
     '<td>' + (this.warning ? this.warning : '') + this.meetingDates.join(',') + '</td>' +
+    //'<td>' + this.bills.join(',') + '</td>' +
     '<td class="debug">' + this.original.bill + '</td>' +
     '<td class="debug">' + this.requestInfo + '</td>' +
-    '<td>' + this.bills.join(',') + '</td>' +
     //'<td class="debug">' + this.original.proposers + ';' + this.original.org + '</td>' +
     //'<td class="debug">' + this.proposerType + '</td>' +
     '<td>' + this.proposers.join(',') + '</td>' +
