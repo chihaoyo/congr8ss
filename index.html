@@ -2,7 +2,8 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>法律提案一覽・congr8ss</title>
+  <title>法律提案・congr8ss</title>
+  <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro:500' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
@@ -10,7 +11,7 @@
     <div id="sitename">congr8ss</div>
   </nav>
   <header>
-    <h1>法律提案一覽</h1>
+    <h1>法律提案</h1>
   </header>
 </body>
 <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
@@ -30,12 +31,12 @@ var proposalDictionaryByBills = {};
 var main = function() {
   console.log(proposals.length, 'proposals');
   console.log(Utility.unique(proposals, 'status'));
-  console.log(Utility.unique(proposals, 'relatedBills').length, 'unique bills');
+  console.log(Utility.unique(proposals, 'bills').length, 'unique bills');
 
   var $body = $('body');
 
   // build dictionaries of meetings
-  for(meeting of meetings) {
+  for(var meeting of meetings) {
     // meetingDictionary
     var idString = meeting.id.numericID;
     if(meetingDictionary[idString] == undefined) {
@@ -55,7 +56,7 @@ var main = function() {
   meetingTimeDictionary = Utility.sortObjectByKey(meetingTimeDictionary);
 
   // build dictionaries of proposals
-  for(proposal of proposals) {
+  for(var proposal of proposals) {
     proposal.lookupDictionaries();
   }
 
@@ -67,16 +68,14 @@ var main = function() {
   }*/
 
   // group proposals by bills
-  for(proposal of proposals) {
-    var bills = proposal.relatedBills.join(',');
-    if(proposalDictionaryByBills[bills] == undefined) {
-      proposalDictionaryByBills[bills] = [];
-    }
+  for(var proposal of proposals) {
+    var bills = proposal.bills.join(',');
+    proposalDictionaryByBills[bills] = (proposalDictionaryByBills[bills] == undefined ? [] : proposalDictionaryByBills[bills]);
     proposalDictionaryByBills[bills].push(proposal);
   }
   proposalDictionaryByBills = Utility.sortObjectByKey(proposalDictionaryByBills);
 
-  for(bills of Object.keys(proposalDictionaryByBills)) {
+  for(var bills of Object.keys(proposalDictionaryByBills)) {
     var $section = $('<section>').append('<h1>' + bills + '</h1>')
     var $table = $('<table class="proposals">');
     var proposalsOfBills = proposalDictionaryByBills[bills];

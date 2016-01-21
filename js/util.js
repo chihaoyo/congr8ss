@@ -9,7 +9,7 @@ Utility.unique = function(list, key, needle) {
       vals = [vals];
 
     //console.log(vals);
-    for(val of vals)
+    for(var val of vals)
       if(val != null && (needle === undefined || val.indexOf(needle) != -1))
         dict[val] = true;
   }
@@ -20,7 +20,7 @@ Utility.sortObjectByKey = function(obj) {
   var keys = Object.keys(obj);
   keys.sort();
   var temp = {};
-  for(key of keys)
+  for(var key of keys)
     temp[key] = obj[key];
   return temp;
 };
@@ -49,3 +49,30 @@ Utility.abbreviateDates = function(dates) {
   }
   return dates.filter(function(v) { return (v != undefined && v != null && v != ''); }); // remove empty values
 };
+Utility.CHNUM = '〇零一二三四五六七八九十百千';
+Utility.parseChineseNumeral = function(n0) { // only good for less than 10,000
+  var replacements = {'〇':0,'零':0,'一':1,'二':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10,'百':100,'千':1000};
+  var n = n0.split('').join(',');
+  for(var c in replacements) {
+    var a = replacements[c];
+    n = n.replace(new RegExp(c, 'g'), a); // String.prototype.replace only replaces the first occurence
+  }
+  n = n.split(',').map(function(m) { return parseInt(m); });
+  var sum = 0;
+  var current = 0;
+  for(var m of n) {
+    if(m !== 0 && Number.isInteger(m/10)) { // 十、百、千
+      if(current == 0)
+        current++;
+      sum += current*m;
+      current = 0;
+    }
+    else {
+      current += m;
+    }
+  }
+  sum += current;
+  if(isNaN(sum)) console.error(n0, n, sum);
+  return sum;
+};
+Utility.WARN = '<span class="warn">⚠️</span>'

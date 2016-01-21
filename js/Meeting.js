@@ -48,7 +48,7 @@ var Meeting = function(data) {
 Meeting.loader = function(url, callback) {
   $.get(url, function(data) {
     data = X2JS.xml2json(data).opendata.data;
-    for(item of data) {
+    for(var item of data) {
       meetings.push(new Meeting(item));
     }
     callback(null);
