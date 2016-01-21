@@ -125,18 +125,18 @@ Proposal.prototype.toString = function() {
 };
 Proposal.prototype.toRow = function(i) {
   return '<tr>' +
-    '<td>' + i + '</td>' +
+    '<td class="index">' + i + '</td>' +
     //'<td class="debug">' + this.meetingID.numericID + '</td>' +
     //'<td class="debug">' + (this.warning ? this.warning : '') + this.meetingFullInfo.join(';') + '</td>' +
-    '<td>' + (this.warning ? this.warning : '') + this.meetingDates.join(',') + '</td>' +
+    '<td class="dates">' + (this.warning ? this.warning : '') + this.meetingDates.join(',') + '</td>' +
     //'<td>' + this.bills.join(',') + '</td>' +
     '<td class="debug">' + this.original.bill + '</td>' +
     '<td class="debug">' + this.requestInfo + '</td>' +
     //'<td class="debug">' + this.original.proposers + ';' + this.original.org + '</td>' +
     //'<td class="debug">' + this.proposerType + '</td>' +
     '<td>' + this.proposers.join(',') + '</td>' +
-    '<td>' + this.status + '</td>' +
-    '<td><a href="' + this.pdf + '" target="_blank">PDF</a></td>' +
+    '<td class="status">' + this.status + '</td>' +
+    '<td class="link"><a href="' + this.pdf + '" target="_blank">PDF</a></td>' +
   '</tr>';
 };
 Proposal.loader = function(url, callback) {

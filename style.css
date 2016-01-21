@@ -27,6 +27,18 @@ td {
   padding: 0 0.5em;
   word-break: break-all;
 }
+td.index {
+  width: 4em;
+}
+td.dates {
+  width: 14em;
+}
+td.status {
+  width: 10em;
+}
+td.link {
+  width: 2em;
+}
 td.debug {
   color: #aaa;
 }
