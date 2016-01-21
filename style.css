@@ -1,0 +1,23 @@
+body {
+  margin: 0;
+  font-family: 'Akkurat-Mono', 'PingFang TC', sans-serif;
+  font-size: 11px;
+}
+table {
+  width: 100%;
+  table-layout: fixed;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+tr:nth-child(2n) {
+  background: #eee;
+}
+td {
+  width: 50%;
+  padding: 0 0.5em;
+  word-break: break-all;
+}
+td.debug {
+  display: none;
+  color: #ccc;
+}
