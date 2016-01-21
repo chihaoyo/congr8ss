@@ -3,6 +3,16 @@ body {
   font-family: 'Source Code Pro', 'PingFang TC', 'Noto Sans CJK TC', monospace;
   font-size: 11px;
 }
+nav {
+  padding: 0.5em;
+  background: #aaa;
+}
+header {
+  padding: 0.5em;
+}
+header h1 {
+  margin: 0;
+}
 table {
   width: 100%;
   table-layout: fixed;
@@ -18,7 +28,7 @@ td {
   word-break: break-all;
 }
 td.debug {
-  color: #ccc;
+  color: #aaa;
 }
 span.warn {
   font-family: monospace;
