@@ -23,35 +23,16 @@
 var meetings = [];
 var meetingDictionary = {};
 var meetingTimeDictionary = {};
+
 var proposals = [];
-var proposalDictionaryByBill = {};
+var proposalDictionaryByBills = {};
 
-var unique = function(key, needle) {
-  var dict = {};
-  for(var x of proposals) {
-    var vals = x[key];
-    if(vals == null)
-      continue;
-    if(!Array.isArray(vals))
-      vals = [vals];
-
-    //console.log(vals);
-    for(val of vals)
-      if(val != null && (needle === undefined || val.indexOf(needle) != -1))
-        dict[val] = true;
-  }
-  return Object.keys(dict);
-};
 var main = function() {
   console.log(proposals.length, 'proposals');
-  console.log(unique('status'));
-  //console.log(unique('billProposer', '民主進步黨'));
-  //console.log(unique('billName'));
+  console.log(Utility.unique(proposals, 'status'));
+  console.log(Utility.unique(proposals, 'relatedBills').length, 'unique bills');
 
-  // find all unique bills
-  var bills = unique('relatedBills');
-  bills.sort();
-  console.log(bills.length, 'unique bills')
+  var $body = $('body');
 
   // build dictionaries of meetings
   for(meeting of meetings) {
@@ -71,15 +52,39 @@ var main = function() {
       meetingTimeDictionary[timeString] = [];
     meetingTimeDictionary[timeString].push(meeting.date + ':' + meeting.name);
   }
-  meetingTimeDictionary = Utility.sortObject(meetingTimeDictionary);
+  meetingTimeDictionary = Utility.sortObjectByKey(meetingTimeDictionary);
 
   // build dictionaries of proposals
-  
+  for(proposal of proposals) {
+    proposal.lookupDictionaries();
+  }
 
-  // output
+  // plain output
+  /*
   var $table = $('<table id="proposals">').appendTo($('body'));
   for(var i = 0; i < proposals.length; i++) {
     $table.append(proposals[i].toRow(i + 1));
+  }*/
+
+  // group proposals by bills
+  for(proposal of proposals) {
+    var bills = proposal.relatedBills.join(',');
+    if(proposalDictionaryByBills[bills] == undefined) {
+      proposalDictionaryByBills[bills] = [];
+    }
+    proposalDictionaryByBills[bills].push(proposal);
+  }
+  proposalDictionaryByBills = Utility.sortObjectByKey(proposalDictionaryByBills);
+
+  for(bills of Object.keys(proposalDictionaryByBills)) {
+    var $section = $('<section>').append('<h1>' + bills + '</h1>')
+    var $table = $('<table class="proposals">');
+    var proposalsOfBills = proposalDictionaryByBills[bills];
+    for(var i = 0; i < proposalsOfBills.length; i++) {
+      $table.append(proposalsOfBills[i].toRow(i + 1));
+    }
+    $section.append($table);
+    $body.append($section);
   }
 }; // end of main()
 
