@@ -111,9 +111,11 @@ Utility.PARTYCODE = {
   'DPP': ['民進黨', '民主進步黨'],
   'PFP': ['親民黨'],
   'TSU': ['台聯','台灣團結聯盟'],
+  'NAG': ['新聯盟']
 };
 Utility.PARTYNAME = {};
 for(var code in Utility.PARTYCODE) {
   for(var name of Utility.PARTYCODE[code])
     Utility.PARTYNAME[name] = code;
 }
+Utility.EXEOFFICES = ['行政院', '司法院', '考試院', '監察院', '本院教育及文化委員會', '教育部'];

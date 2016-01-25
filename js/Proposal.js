@@ -20,7 +20,6 @@ var Proposal = function(data) {
 
   this.bills = []; // an array of only bill names
   this.requests = {}; // bill+article
-  this.proposerType = null;
   this.proposers = [];
   this.status = data.billStatus.replace('(', ':').replace(')', '');
 
@@ -104,7 +103,6 @@ var Proposal = function(data) {
   // extract proposers
   var twoCharacterNames = ['楊　曜','薛　凌'];
   if(data.billProposer != null) {
-    this.proposerType = 'legislator';
     text = data.billProposer;
     for(var name of twoCharacterNames) {
       text = text.replace(name, name.replace('　', ''));
@@ -112,32 +110,29 @@ var Proposal = function(data) {
   }
   else if(data.billOrg != null) {
     // check first
+    // proposer is legislator if regexp matches
     var result = /本院委員(.+)等[\d]+人/.exec(data.billOrg);
-    if(result != null) {
-      console.warn('提案人空白但提案單位為委員', data.billOrg);
-      this.proposerType = 'legislator';
-      text = result[1];
-    }
-    else {
-      this.proposerType = 'org';
-      text = data.billOrg;
-    }
+    text = (result != null ? result[1] : data.billOrg);
   }
   else {
     console.warn('提案人及提案單位皆為空白');
   }
 
-  this.proposers = text.trim().split(/\s+/);
+  this.proposers = text.trim().split(/\s+|、/);
 
   for(var i = 0; i < this.proposers.length; i++) {
     var p = this.proposers[i];
-    var q = null;
     if(p == '法院黨團')
       p = '親民黨立法院黨團';
     else if(p == '聯盟立法院黨團')
       p = '台灣團結聯盟立法院黨團';
+    else if(p == '鄭天財')
+      p = '鄭天財Sra･Kacaw';
 
-    if(p.indexOf('黨團') != -1) { // proposer is a caucus
+    this.proposers[i] = p;
+    var q = null;
+
+    if(p.indexOf('黨團') != -1 || p.indexOf('政團') != -1) { // proposer is a caucus
       for(var partyName in Utility.PARTYNAME) {
         if(p.indexOf(partyName) != -1) {
           q = Utility.PARTYNAME[partyName];
@@ -150,13 +145,12 @@ var Proposal = function(data) {
         console.warn('奇怪的黨團', p, this.id);
     }
   }
-  //assertions
-  /*
-  for(var p of this.proposers) {
-    if(p.length < 2) {
-      console.warn('提案人可能有誤', p);
-    }
-  }*/
+
+  var firstProposer = proposers[this.proposers[0]];
+  if(firstProposer === undefined)
+    console.warn('找不到提案者', this.proposers[0]);
+
+  this.partyAffiliation = firstProposer.party;
 };
 Proposal.prototype.lookupMeetings = function() {
   this.meetingFullInfo = [];
@@ -186,7 +180,7 @@ Proposal.prototype.toString = function() {
   return this.original.bill;
 };
 Proposal.prototype.toRow = function(i) {
-  return '<tr>' +
+  return '<tr class="' + this.partyAffiliation + '">' +
     '<td class="index">' + i + '</td>' +
     '<td class="debug">' + this.id + '</td>' +
     //'<td class="debug">' + this.meetingID.numericID + '</td>' +
@@ -195,8 +189,7 @@ Proposal.prototype.toRow = function(i) {
     //'<td>' + this.bills.join(',') + '</td>' +
     '<td class="debug">' + this.original.bill + '</td>' +
     //'<td class="debug">' + this.requestInfo + '</td>' +
-    '<td class="debug">' + this.original.proposers + ';' + this.original.org + '</td>' +
-    //'<td class="debug">' + this.proposerType + '</td>' +
+    //'<td class="debug">' + this.original.proposers + ';' + this.original.org + '</td>' +
     '<td>' + this.proposers.join(',') + '</td>' +
     '<td class="status">' + this.status + '</td>' +
     '<td class="link"><a href="' + this.documentURL + '" target="_blank">doc</a></td>' +

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>法律提案・congr8ss</title>
   <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro:500,700' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
   <nav>
@@ -17,12 +17,12 @@
 <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js"></script>
 <script src="js/util.js"></script>
-<script src="js/Legislator.js"></script>
+<script src="js/Proposer.js"></script>
 <script src="js/Meeting.js"></script>
 <script src="js/Proposal.js"></script>
 <script>
 
-var legislators = {};
+var proposers = {};
 
 var meetings = [];
 var meetingDictionary = {};
@@ -107,8 +107,8 @@ var main = function() {
 // load everything in
 // proposals: http://data.ly.gov.tw/getds.action?id=20
 // meetings: http://data.ly.gov.tw/getds.action?id=42
-var Q = queue(1);
-Q.defer(Legislator.loader, 'legislators/p1.xml');
+var Q = queue(1); // parallelism: sequential
+Q.defer(Proposer.loader, 'legislators/p1.xml');
 for(var i = 1; i <= 3; i++) {
   Q.defer(Meeting.loader, 'meetings/p' + i + '.xml'); // JSON is unavailable
 }
