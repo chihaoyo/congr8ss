@@ -105,3 +105,15 @@ Utility.printProposalsInSection = function(dict) {
     $body.append($section);
   }
 };
+
+Utility.PARTYCODE = {
+  'KMT': ['國民黨', '中國國民黨'],
+  'DPP': ['民進黨', '民主進步黨'],
+  'PFP': ['親民黨'],
+  'TSU': ['台聯','台灣團結聯盟'],
+};
+Utility.PARTYNAME = {};
+for(var code in Utility.PARTYCODE) {
+  for(var name of Utility.PARTYCODE[code])
+    Utility.PARTYNAME[name] = code;
+}

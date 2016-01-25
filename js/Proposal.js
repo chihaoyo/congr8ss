@@ -102,11 +102,11 @@ var Proposal = function(data) {
   this.requestInfo = this.requestInfo.join(';');
 
   // extract proposers
-  var nameReplacements = ['楊　曜','薛　凌'];
+  var twoCharacterNames = ['楊　曜','薛　凌'];
   if(data.billProposer != null) {
     this.proposerType = 'legislator';
     text = data.billProposer;
-    for(var name of nameReplacements) {
+    for(var name of twoCharacterNames) {
       text = text.replace(name, name.replace('　', ''));
     }
   }
@@ -128,6 +128,28 @@ var Proposal = function(data) {
   }
 
   this.proposers = text.trim().split(/\s+/);
+
+  for(var i = 0; i < this.proposers.length; i++) {
+    var p = this.proposers[i];
+    var q = null;
+    if(p == '法院黨團')
+      p = '親民黨立法院黨團';
+    else if(p == '聯盟立法院黨團')
+      p = '台灣團結聯盟立法院黨團';
+
+    if(p.indexOf('黨團') != -1) { // proposer is a caucus
+      for(var partyName in Utility.PARTYNAME) {
+        if(p.indexOf(partyName) != -1) {
+          q = Utility.PARTYNAME[partyName];
+          break;
+        }
+      }
+      if(q != null)
+        this.proposers[i] = q;
+      else
+        console.warn('奇怪的黨團', p, this.id);
+    }
+  }
   //assertions
   /*
   for(var p of this.proposers) {
@@ -173,7 +195,7 @@ Proposal.prototype.toRow = function(i) {
     //'<td>' + this.bills.join(',') + '</td>' +
     '<td class="debug">' + this.original.bill + '</td>' +
     //'<td class="debug">' + this.requestInfo + '</td>' +
-    //'<td class="debug">' + this.original.proposers + ';' + this.original.org + '</td>' +
+    '<td class="debug">' + this.original.proposers + ';' + this.original.org + '</td>' +
     //'<td class="debug">' + this.proposerType + '</td>' +
     '<td>' + this.proposers.join(',') + '</td>' +
     '<td class="status">' + this.status + '</td>' +
