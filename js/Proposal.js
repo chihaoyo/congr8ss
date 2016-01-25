@@ -1,38 +1,62 @@
 var Proposal = function(data) {
   this.original = {
-    bill: data.billName,
+    bill: data.billName.trim()
+      .replace(/，請審議案。/g, '')
+      .replace(/，請查照審議。/g, '')
+      .replace(/案。/g, '')
+      .replace(/。/g, ''),
     proposers: (data.billProposer ? data.billProposer.trim() : null),
-    org: data.billOrg
+    org: data.billOrg.trim(),
   };
   this.meetingID = new MeetingID(data.term, data.sessionPeriod, data.sessionTimes, data.meetingTimes);
+  this.documentURL = (data.pdfUrl != null ? data.pdfUrl : (data.docUrl != null ? data.docUrl : null));
+/*
+  this.id = (this.documentURL != null ? this.documentURL.match(/\/([^/]+)\.(pdf|doc)/)[1] : null);
+  if(this.documentURL == null)
+    console.warn('沒有文件檔案', data);*/
+  this.id = data.billNo + '-' + this.meetingID.numericID;
+  // this is unique!
+  // 原始資料的pdfUrl或docUrl都可能被多個提案共用，不適合做為提案的unique ID
 
-  this.pdf = data.pdfUrl;
-  this.bills = [];
-  this.requests = {};
+  this.bills = []; // an array of only bill names
+  this.requests = {}; // bill+article
   this.proposerType = null;
   this.proposers = [];
   this.status = data.billStatus.replace('(', ':').replace(')', '');
 
   // extract requests
-  var text = data.billName.replace('\n', '').replace('立法院','LY');
+  var text = data.billName.trim()
+    .replace('\n', '') // make it single line (sort of)
+    .replace('立法院', 'LY')
+    .replace('憲法增修條文','憲增')
+    .replace('（含附屬單位預算及綜計表-營業及非營業部分）', '')
+    .replace('(含附屬單位預算及綜計表-營業及非營業部分)', '');
+
   var requests = text.match(/「[^「]+」/g);
   for(var request of requests) {
-    request = request.substr(1, request.length - 2);
-    var matchResult = /(.*(法律文件|法|議事規則|組織規程|條例|條約|公約|稅則|通則|協定|協議|預算案|總預算|參與文書))(.*)/.exec(request);
+    request = request
+      .substr(1, request.length - 2) // remove quotes
+      .replace(/總預算案/g, '總預算');
+
+    // find bill name (strip details such as article number away)
+    var matchResult =
+    /(.*(法律文件|憲增|法|議事規則|組織規程|條例|條約|公約|稅則|通則|議定書|協定|協議|預算案|總預算|參與文書))(.*)/.exec(request);
     var bill, detail;
-    if(matchResult != null ){
+    if(matchResult != null) { // if bill name is found
       bill = matchResult[1];
       detail = matchResult[3];
       // text processing
-      var matches = detail.match(new RegExp('第[' + Utility.CHNUM + ']+條(之[' + Utility.CHNUM + ']+)*', 'g'));
+      // find 第_條(之_) in detail
+      var matches = detail.match(new RegExp('第{0,1}[' + Utility.CHNUM + ']+條(之[' + Utility.CHNUM + ']+)*', 'g'));
       if(matches != null) {
-        var parts, article, item, replace;
+        var parts, article, ordinal, item, replace;
         for(var match of matches) {
           parts = match.split('之');
           article = parts[0];
-          article = Utility.parseChineseNumeral(article.substr(1, article.length - 2));
+          ordinal = (article.substr(0,1) == '第' ? 1 : 0);
+          article = Utility.parseChineseNumeral(article.substr((ordinal ? 1 : 0), article.length - (ordinal ? 2 : 1)));
           replace = '§' + article;
-          if(parts.length > 1) {
+          if(parts.length > 1) { // if '之' is found
             item = parts[1];
             item = Utility.parseChineseNumeral(item);
             replace += '-' + item;
@@ -41,23 +65,39 @@ var Proposal = function(data) {
         }
       }
       detail = detail
-        .replace(/條文修正草案/g, '修')
+        .replace(/部分條文修正草案/, '') // omit
+        .replace(/條文修正草案/g, '')
+        .replace(/修正草案/g, '')
+        .replace(/部分條文草案/g, '')
         .replace(/條文草案/g, '')
-        .replace(/、/g, ',')
-        .replace(/及/g, ',');
+        .replace(/草案/g, '')
+        .replace(/增訂/g, '')
+        .replace(/刪除/g, '')
+        .replace(/(、|及)/g, ','); // use comma to look cool
     }
-    else {
+    else { // if bill name is not found
       bill = request;
       detail = null;
       console.warn('無法進一步判定法案名稱', request);
     }
-    this.requests[bill] = (this.requests[bill] == undefined ? [] : this.requests[bill]);
-    this.requests[bill].push(detail);
+    this.requests[bill] = (this.requests[bill] == undefined ? {} : this.requests[bill]);
+
+    detail = (detail == null || detail == '' ? '-' : detail);
+    if(detail != null) {
+      var detailItems = detail.split(',');
+      for(var item of detailItems)
+        this.requests[bill][item] = true;
+    }
+  } // end of each request
+
+  // clean up
+  for(var bill in this.requests) {
+    this.requests[bill] = Object.keys(this.requests[bill]);
   }
   this.bills = Object.keys(this.requests);
   this.requestInfo = [];
   for(var bill in this.requests) {
-    this.requestInfo.push(bill + ':' + this.requests[bill].join(','));
+    this.requestInfo.push(bill + ':' + this.requests[bill]);
   }
   this.requestInfo = this.requestInfo.join(';');
 
@@ -96,7 +136,7 @@ var Proposal = function(data) {
     }
   }*/
 };
-Proposal.prototype.lookupDictionaries = function() {
+Proposal.prototype.lookupMeetings = function() {
   this.meetingFullInfo = [];
   this.meetingDates = [];
 
@@ -126,24 +166,26 @@ Proposal.prototype.toString = function() {
 Proposal.prototype.toRow = function(i) {
   return '<tr>' +
     '<td class="index">' + i + '</td>' +
+    '<td class="debug">' + this.id + '</td>' +
     //'<td class="debug">' + this.meetingID.numericID + '</td>' +
     //'<td class="debug">' + (this.warning ? this.warning : '') + this.meetingFullInfo.join(';') + '</td>' +
     '<td class="dates">' + (this.warning ? this.warning : '') + this.meetingDates.join(',') + '</td>' +
     //'<td>' + this.bills.join(',') + '</td>' +
     '<td class="debug">' + this.original.bill + '</td>' +
-    '<td class="debug">' + this.requestInfo + '</td>' +
+    //'<td class="debug">' + this.requestInfo + '</td>' +
     //'<td class="debug">' + this.original.proposers + ';' + this.original.org + '</td>' +
     //'<td class="debug">' + this.proposerType + '</td>' +
     '<td>' + this.proposers.join(',') + '</td>' +
     '<td class="status">' + this.status + '</td>' +
-    '<td class="link"><a href="' + this.pdf + '" target="_blank">PDF</a></td>' +
+    '<td class="link"><a href="' + this.documentURL + '" target="_blank">doc</a></td>' +
   '</tr>';
 };
 Proposal.loader = function(url, callback) {
   $.getJSON(url, function(data) {
     data = data.jsonList;
     for(var item of data) {
-      proposals.push(new Proposal(item));
+      var proposal = new Proposal(item);
+      proposals[proposal.id] = proposal;
     }
     callback(null); // necessary for queue.js to work
   });
