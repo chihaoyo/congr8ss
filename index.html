@@ -50,10 +50,9 @@ $(function() {
       $('tr.' + $this.attr('id')).toggle($this.prop('checked'));
     }).add('<label for="' + party + '">' + party + '</label>').appendTo($filter);
   }
-  $('<input type="checkbox" value="showSectionTitles" checked/>').click(function() {
+  $('<input type="checkbox" id="showSectionTitles" checked/>').click(function() {
     $('section > h1').toggle($(this).prop('checked'));
-  }).appendTo($layout);
-  $('<label>showSectionTitles</label>').appendTo($layout);
+  }).add('<label for="showSectionTitles">showSectionTitles</label>').appendTo($layout);
 });
 
 var main = function() {
