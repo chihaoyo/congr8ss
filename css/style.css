@@ -1,0 +1,42 @@
+body {
+  margin: 0;
+  font-family: 'Source Code Pro', 'PingFang TC', 'Noto Sans CJK TC', monospace;
+  font-size: 11px; }
+
+nav {
+  padding: 0.5em;
+  background: #aaa; }
+
+header {
+  padding: 0.5em; }
+  header h1 {
+    margin: 0; }
+
+table {
+  width: 100%;
+  table-layout: fixed;
+  border-spacing: 0;
+  border-collapse: collapse; }
+
+tr.DPP {
+  background: rgba(0, 255, 0, 0.2); }
+
+td {
+  width: 50%;
+  padding: 0 0.5em;
+  word-break: break-all; }
+  td.index {
+    width: 4em; }
+  td.dates {
+    width: 14em; }
+  td.status {
+    width: 10em; }
+  td.link {
+    width: 2em; }
+  td.debug {
+    color: #aaa; }
+
+span.warn {
+  font-family: monospace; }
+
+/*# sourceMappingURL=style.css.map */

@@ -9,9 +9,9 @@ nav {
 }
 header {
   padding: 0.5em;
-}
-header h1 {
-  margin: 0;
+  h1 {
+    margin: 0;
+  }
 }
 table {
   width: 100%;
@@ -19,28 +19,33 @@ table {
   border-spacing: 0;
   border-collapse: collapse;
 }
+tr {
+  &.DPP {
+    background: rgba(lime,0.2);
+  }
+}
 tr:nth-child(2n) {
-  background: #eee;
+  //background: #eee;
 }
 td {
   width: 50%;
   padding: 0 0.5em;
   word-break: break-all;
-}
-td.index {
-  width: 4em;
-}
-td.dates {
-  width: 14em;
-}
-td.status {
-  width: 10em;
-}
-td.link {
-  width: 2em;
-}
-td.debug {
-  color: #aaa;
+  &.index {
+    width: 4em;
+  }
+  &.dates {
+    width: 14em;
+  }
+  &.status {
+    width: 10em;
+  }
+  &.link {
+    width: 2em;
+  }
+  &.debug {
+    color: #aaa;
+  }
 }
 span.warn {
   font-family: monospace;
