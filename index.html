@@ -8,10 +8,14 @@
 </head>
 <body>
   <nav>
-    <div id="sitename">congr8ss</div>
+    <div id="progress-bar"></div>
+    <div id="site-name">congr8ss</div>
+    <div id="filter"></div>
+    <div id="layout"></div>
   </nav>
   <header>
     <h1>法律提案</h1>
+    <label id="loading">讀取中⋯</label>
   </header>
 </body>
 <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
@@ -21,6 +25,8 @@
 <script src="js/Meeting.js"></script>
 <script src="js/Proposal.js"></script>
 <script>
+
+var $body, $progrssBar, $filter;
 
 var proposers = {};
 
@@ -32,12 +38,28 @@ var proposals = {};
 var proposalDictionaryByBill = {};
 var proposalDictionaryByRequest = {};
 
+$(function() {
+  $body = $('body');
+  $progressBar = $('#progress-bar');
+  $filter = $('#filter');
+  $layout = $('#layout');
+
+  for(var party in Utility.PARTYCODE) {
+    $('<input type="checkbox" id="' + party + '" checked/>').change(function() {
+      var $this = $(this);
+      $('tr.' + $this.attr('id')).toggle($this.prop('checked'));
+    }).add('<label for="' + party + '">' + party + '</label>').appendTo($filter);
+  }
+  $('<input type="checkbox" value="showSectionTitles" checked/>').click(function() {
+    $('section > h1').toggle($(this).prop('checked'));
+  }).appendTo($layout);
+  $('<label>showSectionTitles</label>').appendTo($layout);
+});
+
 var main = function() {
   console.log(Object.keys(proposals).length, 'proposals');
   var BILLS = Utility.unique(proposals, 'bills').sort();
   console.log(BILLS.length, 'unique bills', BILLS);
-
-  var $body = $('body');
 
   // build dictionaries of meetings
   for(var meeting of meetings) {
@@ -102,6 +124,8 @@ var main = function() {
 
   var REQUESTS = Object.keys(proposalDictionaryByRequest);
   console.log(REQUESTS.length, 'unique requests', REQUESTS);
+
+  $('#loading').remove();
 }; // end of main()
 
 // load everything in

@@ -4,11 +4,37 @@ body {
   font-size: 11px;
 }
 nav {
-  padding: 0.5em;
-  background: #aaa;
+  position: fixed;
+  width: 100%;
+
+  // http://uigradients.com
+  // Teal Love
+  background: #AAFFA9; /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #AAFFA9 , #11FFBD); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #AAFFA9 , #11FFBD); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+  #progress-bar {
+    width: 0.5em;
+    height: 2em;
+    background: blue;
+    z-index: 0;
+  }
+  #site-name {
+    position: absolute;
+    top: 0.5em;
+    left: 0.5em;
+    line-height: 1em;
+    font-weight: bold;
+  }
+  #filter > *,
+  #layout > * {
+    display: inline;
+    vertical-align: top;
+  }
 }
 header {
-  padding: 0.5em;
+  padding: 6.5em 0.5em 0.5em;
+  text-align: center;
   h1 {
     margin: 0;
   }
@@ -32,6 +58,9 @@ tr {
   &.PFP {
     background: rgba(darkorange, 0.2);
   }
+  &.GOV {
+    background: rgba(black, 0.1);
+  }
 }
 tr:nth-child(2n) {
   //background: #eee;
@@ -42,6 +71,9 @@ td {
   word-break: break-all;
   &.index {
     width: 4em;
+  }
+  &.id {
+    width: 20em;
   }
   &.dates {
     width: 14em;

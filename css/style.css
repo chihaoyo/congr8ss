@@ -4,11 +4,33 @@ body {
   font-size: 11px; }
 
 nav {
-  padding: 0.5em;
-  background: #aaa; }
+  position: fixed;
+  width: 100%;
+  background: #AAFFA9;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #AAFFA9, #11FFBD);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #AAFFA9, #11FFBD);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */ }
+  nav #progress-bar {
+    width: 0.5em;
+    height: 2em;
+    background: blue;
+    z-index: 0; }
+  nav #site-name {
+    position: absolute;
+    top: 0.5em;
+    left: 0.5em;
+    line-height: 1em;
+    font-weight: bold; }
+  nav #filter > *,
+  nav #layout > * {
+    display: inline;
+    vertical-align: top; }
 
 header {
-  padding: 0.5em; }
+  padding: 6.5em 0.5em 0.5em;
+  text-align: center; }
   header h1 {
     margin: 0; }
 
@@ -26,6 +48,8 @@ tr.KMT {
   background: rgba(0, 0, 255, 0.2); }
 tr.PFP {
   background: rgba(255, 140, 0, 0.2); }
+tr.GOV {
+  background: rgba(0, 0, 0, 0.1); }
 
 td {
   width: 50%;
@@ -33,6 +57,8 @@ td {
   word-break: break-all; }
   td.index {
     width: 4em; }
+  td.id {
+    width: 20em; }
   td.dates {
     width: 14em; }
   td.status {
