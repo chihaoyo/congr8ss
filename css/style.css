@@ -20,6 +20,12 @@ table {
 
 tr.DPP {
   background: rgba(0, 255, 0, 0.2); }
+tr.TSU {
+  background: rgba(139, 69, 19, 0.2); }
+tr.KMT {
+  background: rgba(0, 0, 255, 0.2); }
+tr.PFP {
+  background: rgba(255, 140, 0, 0.2); }
 
 td {
   width: 50%;

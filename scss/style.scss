@@ -21,7 +21,16 @@ table {
 }
 tr {
   &.DPP {
-    background: rgba(lime,0.2);
+    background: rgba(lime, 0.2);
+  }
+  &.TSU {
+    background: rgba(saddlebrown, 0.2);
+  }
+  &.KMT {
+    background: rgba(blue, 0.2);
+  }
+  &.PFP {
+    background: rgba(darkorange, 0.2);
   }
 }
 tr:nth-child(2n) {
