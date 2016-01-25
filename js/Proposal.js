@@ -22,6 +22,7 @@ var Proposal = function(data) {
   this.requests = {}; // bill+article
   this.proposers = [];
   this.status = data.billStatus.replace('(', ':').replace(')', '');
+  this.statusCode = Utility.STATUSNAME[this.status];
 
   // extract requests
   var text = data.billName.trim()
@@ -151,7 +152,7 @@ var Proposal = function(data) {
     console.warn('找不到提案者', this.proposers[0]);
   }
   else {
-    this.partyAffiliation = this.firstProposer.party;
+    this.partyCode = this.firstProposer.party;
   }
 };
 Proposal.prototype.lookupMeetings = function() {
@@ -182,7 +183,7 @@ Proposal.prototype.toString = function() {
   return this.original.bill;
 };
 Proposal.prototype.toRow = function(i) {
-  return '<tr class="' + this.partyAffiliation + '">' +
+  return '<tr data-party="' + this.partyCode + '" data-status="' + this.statusCode + '">' +
     '<td class="index">' + i + '</td>' +
     '<td class="id">' + this.id + '</td>' +
     //'<td class="debug">' + this.meetingID.numericID + '</td>' +

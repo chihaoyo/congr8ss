@@ -12,16 +12,8 @@ nav {
   /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to left, #AAFFA9, #11FFBD);
   /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */ }
-  nav #progress-bar {
-    width: 0.5em;
-    height: 2em;
-    background: blue;
-    z-index: 0; }
-  nav #site-name {
-    position: absolute;
-    top: 0.5em;
-    left: 0.5em;
-    line-height: 1em;
+  nav #siteName {
+    padding: 0 0.5em;
     font-weight: bold; }
   nav #filter > *,
   nav #layout > * {
@@ -29,7 +21,7 @@ nav {
     vertical-align: top; }
 
 header {
-  padding: 6.5em 0.5em 0.5em;
+  padding: 7.5em 0.5em 0.5em;
   text-align: center; }
   header h1 {
     margin: 0; }
@@ -40,15 +32,15 @@ table {
   border-spacing: 0;
   border-collapse: collapse; }
 
-tr.DPP {
+tr[data-party="DPP"] {
   background: rgba(0, 255, 0, 0.2); }
-tr.TSU {
+tr[data-party="TSU"] {
   background: rgba(139, 69, 19, 0.2); }
-tr.KMT {
+tr[data-party="KMT"] {
   background: rgba(0, 0, 255, 0.2); }
-tr.PFP {
+tr[data-party="PFP"] {
   background: rgba(255, 140, 0, 0.2); }
-tr.GOV {
+tr[data-party="GOV"] {
   background: rgba(0, 0, 0, 0.1); }
 
 td {

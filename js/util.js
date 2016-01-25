@@ -124,3 +124,22 @@ for(var code in Utility.PARTYCODE) {
   for(var name of Utility.PARTYCODE[code])
     Utility.PARTYNAME[name] = code;
 }
+Utility.STATUSCODE = {
+  'Scheduled': '排入程序',
+  'ReturnToProgramCommittee': '退回程序',
+  'CommitteeWillExamine': '交付審查',
+  'CommitteeDoneExamine': '審查完畢',
+  'WillR2': '逕付二讀',
+  'SkipCommitteeAndWillR2': '逕付二讀:委員會抽出',
+  'ScheduledForGeneralAssembly': '排入院會',
+  'R2': '二讀',
+  'R3': '三讀',
+  'Withdrawn': '撤案',
+  'Dismissed': '不予審議',
+  'Reassigning':'改交其他委員會審查',
+};
+Utility.STATUSNAME = {};
+for(var code in Utility.STATUSCODE) {
+  var name = Utility.STATUSCODE[code];
+  Utility.STATUSNAME[name] = code;
+}

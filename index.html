@@ -8,9 +8,9 @@
 </head>
 <body>
   <nav>
-    <div id="progress-bar"></div>
-    <div id="site-name">congr8ss</div>
-    <div id="filter"></div>
+    <div id="siteName">congr8ss</div>
+    <div id="partyFilter"></div>
+    <div id="statusFilter"></div>
     <div id="layout"></div>
   </nav>
   <header>
@@ -26,7 +26,7 @@
 <script src="js/Proposal.js"></script>
 <script>
 
-var $body, $progrssBar, $filter;
+var $body, $progrssBar, $partyFilter, $statusFilter, $layout;
 
 var proposers = {};
 
@@ -40,19 +40,25 @@ var proposalDictionaryByRequest = {};
 
 $(function() {
   $body = $('body');
-  $progressBar = $('#progress-bar');
-  $filter = $('#filter');
+  $partyFilter = $('#partyFilter');
+  $statusFilter = $('#statusFilter');
   $layout = $('#layout');
 
   for(var party in Utility.PARTYCODE) {
     $('<input type="checkbox" id="' + party + '" checked/>').change(function() {
       var $this = $(this);
-      $('tr.' + $this.attr('id')).toggle($this.prop('checked'));
-    }).add('<label for="' + party + '">' + party + '</label>').appendTo($filter);
+      $('tr[data-party="' + $this.attr('id') + '"]').toggle($this.prop('checked'));
+    }).add('<label for="' + party + '">' + Utility.PARTYCODE[party] + '</label>').appendTo($partyFilter);
   }
   $('<input type="checkbox" id="showSectionTitles" checked/>').click(function() {
     $('section > h1').toggle($(this).prop('checked'));
   }).add('<label for="showSectionTitles">showSectionTitles</label>').appendTo($layout);
+  for(var status in Utility.STATUSCODE) {
+    $('<input type="checkbox" id="' + status + '" checked/>').change(function() {
+      var $this = $(this);
+      $('tr[data-status="' + $this.attr('id') + '"]').toggle($this.prop('checked'));
+    }).add('<label for="' + status + '">' + Utility.STATUSCODE[status] + '</label>').appendTo($statusFilter);
+  }
 });
 
 var main = function() {
