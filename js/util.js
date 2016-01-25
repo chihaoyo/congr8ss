@@ -93,12 +93,17 @@ Utility.parseChineseNumeral = function(n0) { // only good for less than 10,000
 Utility.WARN = '<span class="warn">⚠️</span>'
 
 Utility.printProposalsInSection = function(dict) {
-  var $body = $('body');
+  var totalCount = 0;
+  for(var title in dict) {
+    totalCount += dict[title].length;
+  }
+  console.log(totalCount, 'rows to print');
+
   for(var title in dict) {
     var pids = dict[title];
     var $section = $('<section>').append('<h1>' + title + '</h1>')
     var $table = $('<table class="proposals">');
-    for(var i = 0; i < pids.length; i++){
+    for(var i = 0; i < pids.length; i++) {
       $table.append(proposals[pids[i]].toRow(i + 1));
     }
     $section.append($table);
@@ -111,11 +116,11 @@ Utility.PARTYCODE = {
   'DPP': ['民進黨', '民主進步黨'],
   'PFP': ['親民黨'],
   'TSU': ['台聯','台灣團結聯盟'],
-  'NAG': ['新聯盟']
+  'NAG': ['新聯盟','無黨團結聯盟','民國黨'],
+  'GOV': ['行政院', '司法院', '考試院', '監察院', '本院教育及文化委員會', '教育部'],
 };
 Utility.PARTYNAME = {};
 for(var code in Utility.PARTYCODE) {
   for(var name of Utility.PARTYCODE[code])
     Utility.PARTYNAME[name] = code;
 }
-Utility.EXEOFFICES = ['行政院', '司法院', '考試院', '監察院', '本院教育及文化委員會', '教育部'];

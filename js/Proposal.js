@@ -146,11 +146,13 @@ var Proposal = function(data) {
     }
   }
 
-  var firstProposer = proposers[this.proposers[0]];
-  if(firstProposer === undefined)
+  this.firstProposer = proposers[this.proposers[0]];
+  if(this.firstProposer === undefined) {
     console.warn('找不到提案者', this.proposers[0]);
-
-  this.partyAffiliation = firstProposer.party;
+  }
+  else {
+    this.partyAffiliation = this.firstProposer.party;
+  }
 };
 Proposal.prototype.lookupMeetings = function() {
   this.meetingFullInfo = [];
@@ -182,13 +184,13 @@ Proposal.prototype.toString = function() {
 Proposal.prototype.toRow = function(i) {
   return '<tr class="' + this.partyAffiliation + '">' +
     '<td class="index">' + i + '</td>' +
-    '<td class="debug">' + this.id + '</td>' +
+    '<td class="id">' + this.id + '</td>' +
     //'<td class="debug">' + this.meetingID.numericID + '</td>' +
     //'<td class="debug">' + (this.warning ? this.warning : '') + this.meetingFullInfo.join(';') + '</td>' +
     '<td class="dates">' + (this.warning ? this.warning : '') + this.meetingDates.join(',') + '</td>' +
     //'<td>' + this.bills.join(',') + '</td>' +
     '<td class="debug">' + this.original.bill + '</td>' +
-    //'<td class="debug">' + this.requestInfo + '</td>' +
+    '<td class="debug">' + this.requestInfo + '</td>' +
     //'<td class="debug">' + this.original.proposers + ';' + this.original.org + '</td>' +
     '<td>' + this.proposers.join(',') + '</td>' +
     '<td class="status">' + this.status + '</td>' +
