@@ -25,13 +25,14 @@ var meetings = [];
 var meetingDictionary = {};
 var meetingTimeDictionary = {};
 
-var proposals = [];
-var proposalDictionaryByBills = {};
+var proposals = {};
+var proposalDictionaryByBill = {};
+var proposalDictionaryByRequest = {};
 
 var main = function() {
-  console.log(proposals.length, 'proposals');
-  console.log(Utility.unique(proposals, 'status'));
-  console.log(Utility.unique(proposals, 'bills').length, 'unique bills');
+  console.log(Object.keys(proposals).length, 'proposals');
+  var BILLS = Utility.unique(proposals, 'bills').sort();
+  console.log(BILLS.length, 'unique bills', BILLS);
 
   var $body = $('body');
 
@@ -55,9 +56,9 @@ var main = function() {
   }
   meetingTimeDictionary = Utility.sortObjectByKey(meetingTimeDictionary);
 
-  // build dictionaries of proposals
-  for(var proposal of proposals) {
-    proposal.lookupDictionaries();
+  // augement proposals with meeting data
+  for(var pid in proposals) {
+    proposals[pid].lookupMeetings();
   }
 
   // plain output
@@ -68,23 +69,36 @@ var main = function() {
   }*/
 
   // group proposals by bills
+  /*
   for(var proposal of proposals) {
     var bills = proposal.bills.join(',');
-    proposalDictionaryByBills[bills] = (proposalDictionaryByBills[bills] == undefined ? [] : proposalDictionaryByBills[bills]);
-    proposalDictionaryByBills[bills].push(proposal);
+    proposalDictionaryByBill[bills] = (proposalDictionaryByBill[bills] == undefined ? [] : proposalDictionaryByBill[bills]);
+    proposalDictionaryByBill[bills].push(proposal);
   }
-  proposalDictionaryByBills = Utility.sortObjectByKey(proposalDictionaryByBills);
+  proposalDictionaryByBill = Utility.sortObjectByKey(proposalDictionaryByBill);
+  Utility.printProposalsInSection(proposalDictionaryByBill);
+  */
 
-  for(var bills of Object.keys(proposalDictionaryByBills)) {
-    var $section = $('<section>').append('<h1>' + bills + '</h1>')
-    var $table = $('<table class="proposals">');
-    var proposalsOfBills = proposalDictionaryByBills[bills];
-    for(var i = 0; i < proposalsOfBills.length; i++) {
-      $table.append(proposalsOfBills[i].toRow(i + 1));
+  // group proposals by requests
+  for(var pid in proposals) {
+    var proposal = proposals[pid];
+    var requests = [];
+    for(var bill in proposal.requests) {
+      var detailItems = proposal.requests[bill];
+      for(item of detailItems) {
+        requests.push(bill + ':' + item);
+      }
     }
-    $section.append($table);
-    $body.append($section);
+    for(request of requests) {
+      proposalDictionaryByRequest[request] = (proposalDictionaryByRequest[request] == undefined ? [] : proposalDictionaryByRequest[request]);
+      proposalDictionaryByRequest[request].push(proposal.id);
+    }
   }
+  proposalDictionaryByRequest = Utility.sortObjectByKey(proposalDictionaryByRequest);
+  Utility.printProposalsInSection(proposalDictionaryByRequest);
+
+  var REQUESTS = Object.keys(proposalDictionaryByRequest);
+  console.log(REQUESTS.length, 'unique requests', REQUESTS);
 }; // end of main()
 
 // load everything in
