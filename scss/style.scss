@@ -37,19 +37,19 @@ table {
   border-collapse: collapse;
 }
 tr {
-  &[data-party="DPP"] {
+  &[data-parties^="DPP"] {
     background: rgba(lime, 0.2);
   }
-  &[data-party="TSU"] {
+  &[data-parties^="TSU"] {
     background: rgba(saddlebrown, 0.2);
   }
-  &[data-party="KMT"] {
+  &[data-parties^="KMT"] {
     background: rgba(blue, 0.2);
   }
-  &[data-party="PFP"] {
+  &[data-parties^="PFP"] {
     background: rgba(darkorange, 0.2);
   }
-  &[data-party="GOV"] {
+  &[data-parties^="GOV"] {
     background: rgba(black, 0.1);
   }
 }

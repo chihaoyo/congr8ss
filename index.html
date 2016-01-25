@@ -47,7 +47,7 @@ $(function() {
   for(var party in Utility.PARTYCODE) {
     $('<input type="checkbox" id="' + party + '" checked/>').change(function() {
       var $this = $(this);
-      $('tr[data-party="' + $this.attr('id') + '"]').toggle($this.prop('checked'));
+      $('tr[data-parties~="' + $this.attr('id') + '"]').toggle($this.prop('checked'));
     }).add('<label for="' + party + '">' + Utility.PARTYCODE[party] + '</label>').appendTo($partyFilter);
   }
   $('<input type="checkbox" id="showSectionTitles" checked/>').click(function() {

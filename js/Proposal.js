@@ -129,6 +129,10 @@ var Proposal = function(data) {
       p = '台灣團結聯盟立法院黨團';
     else if(p == '鄭天財')
       p = '鄭天財Sra･Kacaw';
+    else if(p == '陳歐柏')
+      p = '陳歐珀';
+    else if(p == '楊瓊櫻')
+      p = '楊瓊瓔';
 
     this.proposers[i] = p;
     var q = null;
@@ -147,13 +151,14 @@ var Proposal = function(data) {
     }
   }
 
-  this.firstProposer = proposers[this.proposers[0]];
-  if(this.firstProposer === undefined) {
-    console.warn('找不到提案者', this.proposers[0]);
+  this.parties = {};
+  for(var p of this.proposers) {
+    if(proposers[p] === undefined)
+      console.warn('找不到提案人資料', p);
+    else
+      this.parties[proposers[p].party] = true;
   }
-  else {
-    this.partyCode = this.firstProposer.party;
-  }
+  this.parties = Object.keys(this.parties);
 };
 Proposal.prototype.lookupMeetings = function() {
   this.meetingFullInfo = [];
@@ -183,7 +188,7 @@ Proposal.prototype.toString = function() {
   return this.original.bill;
 };
 Proposal.prototype.toRow = function(i) {
-  return '<tr data-party="' + this.partyCode + '" data-status="' + this.statusCode + '">' +
+  return '<tr data-parties="' + this.parties.join(' ') + '" data-status="' + this.statusCode + '">' +
     '<td class="index">' + i + '</td>' +
     '<td class="id">' + this.id + '</td>' +
     //'<td class="debug">' + this.meetingID.numericID + '</td>' +
