@@ -6,12 +6,16 @@
   <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro:500,700' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="css/style.css"/>
 </head>
-<body>
+<body class="colors sectionTitles">
   <nav>
     <div id="siteName">congr8ss</div>
     <div id="partyFilter"></div>
     <div id="statusFilter"></div>
-    <div id="layout"></div>
+    <div id="layout">
+      <input type="checkbox" id="colors" checked/><label for="colors">colors</label>
+      <input type="checkbox" id="sectionTitles" checked/><label for="sectionTitles">sectionTitles</label>
+      <input type="checkbox" id="dataOnly"/><label for="dataOnly">dataOnly</label>
+    </div>
   </nav>
   <header>
     <h1>法律提案</h1>
@@ -50,15 +54,15 @@ $(function() {
       $('tr[data-parties~="' + $this.attr('id') + '"]').toggle($this.prop('checked'));
     }).add('<label for="' + party + '">' + Utility.PARTYCODE[party] + '</label>').appendTo($partyFilter);
   }
-  $('<input type="checkbox" id="showSectionTitles" checked/>').click(function() {
-    $('section > h1').toggle($(this).prop('checked'));
-  }).add('<label for="showSectionTitles">showSectionTitles</label>').appendTo($layout);
   for(var status in Utility.STATUSCODE) {
     $('<input type="checkbox" id="' + status + '" checked/>').change(function() {
       var $this = $(this);
       $('tr[data-status="' + $this.attr('id') + '"]').toggle($this.prop('checked'));
     }).add('<label for="' + status + '">' + Utility.STATUSCODE[status] + '</label>').appendTo($statusFilter);
   }
+  $('#colors, #sectionTitles, #dataOnly').click(function() {
+    $body.toggleClass($(this).attr('id'), $(this).prop('checked'));
+  });
 });
 
 var main = function() {

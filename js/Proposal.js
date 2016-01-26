@@ -10,6 +10,7 @@ var Proposal = function(data) {
   };
   this.meetingID = new MeetingID(data.term, data.sessionPeriod, data.sessionTimes, data.meetingTimes);
   this.documentURL = (data.pdfUrl != null ? data.pdfUrl : (data.docUrl != null ? data.docUrl : null));
+  this.documentBaseName = this.id = this.documentURL.match(/\/(([^/]+)\.(pdf|doc))/)[1];
 /*
   this.id = (this.documentURL != null ? this.documentURL.match(/\/([^/]+)\.(pdf|doc)/)[1] : null);
   if(this.documentURL == null)
@@ -200,7 +201,7 @@ Proposal.prototype.toRow = function(i) {
     //'<td class="debug">' + this.original.proposers + ';' + this.original.org + '</td>' +
     '<td>' + this.proposers.join(',') + '</td>' +
     '<td class="status">' + this.status + '</td>' +
-    '<td class="link"><a href="' + this.documentURL + '" target="_blank">doc</a></td>' +
+    '<td class="link"><a href="' + this.documentURL + '" target="_blank">' + this.documentBaseName + '</a></td>' +
   '</tr>';
 };
 Proposal.loader = function(url, callback) {

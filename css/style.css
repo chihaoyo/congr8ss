@@ -1,10 +1,11 @@
 body {
-  margin: 0;
+  margin: 6.2em 0 0;
   font-family: 'Source Code Pro', 'PingFang TC', 'Noto Sans CJK TC', monospace;
   font-size: 11px; }
 
 nav {
   position: fixed;
+  top: 0;
   width: 100%;
   background: #AAFFA9;
   /* fallback for old browsers */
@@ -21,10 +22,13 @@ nav {
     vertical-align: top; }
 
 header {
-  padding: 7.5em 0.5em 0.5em;
+  padding: 0.5em;
   text-align: center; }
-  header h1 {
+  header > h1 {
     margin: 0; }
+
+section > h1 {
+  display: none; }
 
 table {
   width: 100%;
@@ -32,35 +36,47 @@ table {
   border-spacing: 0;
   border-collapse: collapse; }
 
-tr[data-parties^="DPP"] {
-  background: rgba(0, 255, 0, 0.2); }
-tr[data-parties^="TSU"] {
-  background: rgba(139, 69, 19, 0.2); }
-tr[data-parties^="KMT"] {
-  background: rgba(0, 0, 255, 0.2); }
-tr[data-parties^="PFP"] {
-  background: rgba(255, 140, 0, 0.2); }
-tr[data-parties^="GOV"] {
-  background: rgba(0, 0, 0, 0.1); }
-
 td {
   width: 50%;
   padding: 0 0.5em;
   word-break: break-all; }
   td.index {
-    width: 4em; }
+    width: 3em; }
   td.id {
-    width: 20em; }
+    width: 18em; }
   td.dates {
     width: 14em; }
   td.status {
-    width: 10em; }
+    width: 5em; }
   td.link {
-    width: 2em; }
+    width: 18em; }
   td.debug {
     color: #aaa; }
 
 span.warn {
   font-family: monospace; }
+
+body.colors section > table > tr[data-parties^="DPP"] {
+  background: rgba(0, 255, 0, 0.2); }
+body.colors section > table > tr[data-parties^="TSU"] {
+  background: rgba(139, 69, 19, 0.2); }
+body.colors section > table > tr[data-parties^="KMT"] {
+  background: rgba(0, 0, 255, 0.2); }
+body.colors section > table > tr[data-parties^="PFP"] {
+  background: rgba(255, 140, 0, 0.2); }
+body.colors section > table > tr[data-parties^="GOV"] {
+  background: rgba(0, 0, 0, 0.1); }
+
+body.sectionTitles section > h1 {
+  display: block; }
+
+body.dataOnly {
+  margin-top: 1.6em; }
+  body.dataOnly nav > :not(#layout) {
+    display: none; }
+  body.dataOnly header {
+    display: none; }
+  body.dataOnly section > h1 {
+    display: none; }
 
 /*# sourceMappingURL=style.css.map */

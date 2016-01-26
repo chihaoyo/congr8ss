@@ -1,10 +1,12 @@
+$navHeight: 6.2em;
 body {
-  margin: 0;
+  margin: $navHeight 0 0;
   font-family: 'Source Code Pro', 'PingFang TC', 'Noto Sans CJK TC', monospace;
   font-size: 11px;
 }
 nav {
   position: fixed;
+  top: 0;
   width: 100%;
 
   // http://uigradients.com
@@ -24,34 +26,20 @@ nav {
   }
 }
 header {
-  padding: 7.5em 0.5em 0.5em;
+  padding: 0.5em;
   text-align: center;
-  h1 {
+  > h1 {
     margin: 0;
   }
+}
+section > h1 {
+  display: none;
 }
 table {
   width: 100%;
   table-layout: fixed;
   border-spacing: 0;
   border-collapse: collapse;
-}
-tr {
-  &[data-parties^="DPP"] {
-    background: rgba(lime, 0.2);
-  }
-  &[data-parties^="TSU"] {
-    background: rgba(saddlebrown, 0.2);
-  }
-  &[data-parties^="KMT"] {
-    background: rgba(blue, 0.2);
-  }
-  &[data-parties^="PFP"] {
-    background: rgba(darkorange, 0.2);
-  }
-  &[data-parties^="GOV"] {
-    background: rgba(black, 0.1);
-  }
 }
 tr:nth-child(2n) {
   //background: #eee;
@@ -61,19 +49,19 @@ td {
   padding: 0 0.5em;
   word-break: break-all;
   &.index {
-    width: 4em;
+    width: 3em;
   }
   &.id {
-    width: 20em;
+    width: 18em;
   }
   &.dates {
     width: 14em;
   }
   &.status {
-    width: 10em;
+    width: 5em;
   }
   &.link {
-    width: 2em;
+    width: 18em;
   }
   &.debug {
     color: #aaa;
@@ -81,4 +69,32 @@ td {
 }
 span.warn {
   font-family: monospace;
+}
+body.colors {
+  section > table > tr {
+    &[data-parties^="DPP"] {
+      background: rgba(lime, 0.2);
+    }
+    &[data-parties^="TSU"] {
+      background: rgba(saddlebrown, 0.2);
+    }
+    &[data-parties^="KMT"] {
+      background: rgba(blue, 0.2);
+    }
+    &[data-parties^="PFP"] {
+      background: rgba(darkorange, 0.2);
+    }
+    &[data-parties^="GOV"] {
+      background: rgba(black, 0.1);
+    }
+  }
+}
+body.sectionTitles {
+  section > h1 { display: block; }
+}
+body.dataOnly {
+  margin-top: 1.6em;
+  nav > :not(#layout) { display: none; }
+  header { display: none; }
+  section > h1 { display: none; }
 }
