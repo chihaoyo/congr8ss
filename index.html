@@ -6,21 +6,23 @@
   <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro:500,700' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="css/style.css"/>
 </head>
-<body class="colors sectionTitles">
-  <nav>
-    <div id="siteName">congr8ss</div>
-    <div id="partyFilter"></div>
-    <div id="statusFilter"></div>
-    <div id="layout">
-      <input type="checkbox" id="colors" checked/><label for="colors">colors</label>
-      <input type="checkbox" id="sectionTitles" checked/><label for="sectionTitles">sectionTitles</label>
-      <input type="checkbox" id="dataOnly"/><label for="dataOnly">dataOnly</label>
+<body class="loading color groupHeader">
+  <div id="fixed">
+    <header>
+      <h1>congr8ss</h1>
+      <h2>法律提案</h2>
+    </header>
+    <div id="controls">
+      <div id="partyFilter"></div>
+      <div id="statusFilter"></div>
+      <div id="layout">
+        <input type="checkbox" id="color" checked/><label for="color">color</label>
+        <input type="checkbox" id="groupHeader" checked/><label for="groupHeader">groupHeader</label>
+        <div id="jump"></div>
+      </div>
     </div>
-  </nav>
-  <header>
-    <h1>法律提案</h1>
-    <label id="loading">讀取中⋯</label>
-  </header>
+    <div id="loading"><label>讀取中⋯</label></div>
+  </div>
 </body>
 <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js"></script>
@@ -30,45 +32,63 @@
 <script src="js/Proposal.js"></script>
 <script>
 
-var $body, $progrssBar, $partyFilter, $statusFilter, $layout;
+// UI
+var $body, $partyFilter, $statusFilter, $layout, $jump;
+var styleEl, stylesForFilter = '';
 
+// data structures
 var proposers = {};
-
 var meetings = [];
 var meetingDictionary = {};
 var meetingTimeDictionary = {};
-
 var proposals = {};
-var proposalDictionaryByBill = {};
-var proposalDictionaryByRequest = {};
 
+var groups = [];
+
+// ready function
 $(function() {
   $body = $('body');
   $partyFilter = $('#partyFilter');
   $statusFilter = $('#statusFilter');
   $layout = $('#layout');
+  $jump = $('#jump');
 
+  // test @ http://jsbin.com/lixuvi/edit?
+  var changeHandler = function() {
+    var $this = $(this);
+    $body.toggleClass($this.attr('id'), $this.prop('checked'));
+  };
   for(var party in Utility.PARTYCODE) {
-    $('<input type="checkbox" id="' + party + '" checked/>').change(function() {
-      var $this = $(this);
-      $('tr[data-parties~="' + $this.attr('id') + '"]').toggle($this.prop('checked'));
-    }).add('<label for="' + party + '">' + Utility.PARTYCODE[party] + '</label>').appendTo($partyFilter);
+    $('<input type="checkbox" id="' + party + '" checked/>')
+      .change(changeHandler)
+      .add('<label for="' + party + '">' + Utility.PARTYCODE[party] + '</label>')
+      .appendTo($partyFilter);
+    stylesForFilter += 'body.' + party + ' tr[data-parties~="' + party + '"] { display: table-row; }' + '\n';
+    $body.addClass(party);
   }
   for(var status in Utility.STATUSCODE) {
-    $('<input type="checkbox" id="' + status + '" checked/>').change(function() {
-      var $this = $(this);
-      $('tr[data-status="' + $this.attr('id') + '"]').toggle($this.prop('checked'));
-    }).add('<label for="' + status + '">' + Utility.STATUSCODE[status] + '</label>').appendTo($statusFilter);
+    $('<input type="checkbox" id="' + status + '" checked/>')
+      .change(changeHandler)
+      .add('<label for="' + status + '">' + Utility.STATUSCODE[status] + '</label>')
+      .appendTo($statusFilter);
+    stylesForFilter += 'body.' + status + ' tr[data-status~="' + status + '"] { display: table-row; }' + '\n';
+    $body.addClass(status);
   }
-  $('#colors, #sectionTitles, #dataOnly').click(function() {
+  styleEl = document.createElement('style');
+  styleEl.type = 'text/css';
+  if(styleEl.styleSheet)
+    styleEl.styleSheet.cssText = stylesForFilter;
+  else
+    styleEl.appendChild(document.createTextNode(stylesForFilter));
+  document.head.appendChild(styleEl);
+
+  $('#color, #groupHeader').click(function() {
     $body.toggleClass($(this).attr('id'), $(this).prop('checked'));
   });
 });
 
 var main = function() {
   console.log(Object.keys(proposals).length, 'proposals');
-  var BILLS = Utility.unique(proposals, 'bills').sort();
-  console.log(BILLS.length, 'unique bills', BILLS);
 
   // build dictionaries of meetings
   for(var meeting of meetings) {
@@ -95,46 +115,30 @@ var main = function() {
     proposals[pid].lookupMeetings();
   }
 
-  // plain output
-  /*
-  var $table = $('<table id="proposals">').appendTo($('body'));
-  for(var i = 0; i < proposals.length; i++) {
-    $table.append(proposals[i].toRow(i + 1));
-  }*/
-
   // group proposals by bills
   /*
-  for(var proposal of proposals) {
-    var bills = proposal.bills.join(',');
-    proposalDictionaryByBill[bills] = (proposalDictionaryByBill[bills] == undefined ? [] : proposalDictionaryByBill[bills]);
-    proposalDictionaryByBill[bills].push(proposal);
-  }
-  proposalDictionaryByBill = Utility.sortObjectByKey(proposalDictionaryByBill);
-  Utility.printProposalsInSection(proposalDictionaryByBill);
-  */
+  Utility.printProposalsInKeyGroups(function(pid) {
+    return proposals[pid].bills;
+  });*/
 
-  // group proposals by requests
-  for(var pid in proposals) {
-    var proposal = proposals[pid];
-    var requests = [];
-    for(var bill in proposal.requests) {
-      var detailItems = proposal.requests[bill];
-      for(item of detailItems) {
-        requests.push(bill + ':' + item);
-      }
-    }
-    for(request of requests) {
-      proposalDictionaryByRequest[request] = (proposalDictionaryByRequest[request] == undefined ? [] : proposalDictionaryByRequest[request]);
-      proposalDictionaryByRequest[request].push(proposal.id);
-    }
-  }
-  proposalDictionaryByRequest = Utility.sortObjectByKey(proposalDictionaryByRequest);
-  Utility.printProposalsInSection(proposalDictionaryByRequest);
+  // print proposals in groups
+  /*
+  Utility.printProposalsInKeyGroups(function(pid) {
+    return proposals[pid].proposers;
+  });*/
+  Utility.groupProposals('byDocumentURL', function(p) {
+    return proposals[p].documentURL;
+  }, true, true);
+  Utility.groupProposals('byProposer', function(p) {
+    return proposals[p].proposers;
+  }, true, true);
 
-  var REQUESTS = Object.keys(proposalDictionaryByRequest);
-  console.log(REQUESTS.length, 'unique requests', REQUESTS);
+  $('a.anchor').each(function() {
+    var name = $(this).attr('name');
+    $jump.append('<a href="#' + name + '">' + name + '</a>');
+  });
 
-  $('#loading').remove();
+  $body.removeClass('loading');
 }; // end of main()
 
 // load everything in

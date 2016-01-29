@@ -1,34 +1,97 @@
-body {
-  margin: 6.2em 0 0;
+body, div, td {
+  margin: 0;
   font-family: 'Source Code Pro', 'PingFang TC', 'Noto Sans CJK TC', monospace;
   font-size: 11px; }
 
-nav {
+a, a:link, a:visited {
+  color: blue;
+  text-decoration: none; }
+
+#fixed {
   position: fixed;
   top: 0;
+  box-sizing: border-box;
   width: 100%;
+  padding: 0.5em 0.5em 0;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   background: #AAFFA9;
   /* fallback for old browsers */
   background: -webkit-linear-gradient(to left, #AAFFA9, #11FFBD);
   /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to left, #AAFFA9, #11FFBD);
   /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */ }
-  nav #siteName {
-    padding: 0 0.5em;
-    font-weight: bold; }
-  nav #filter > *,
-  nav #layout > * {
+  #fixed > #controls #filter > *,
+  #fixed > #controls #layout > * {
     display: inline;
     vertical-align: top; }
+  #fixed > #controls #layout > #jump {
+    display: block;
+    margin-top: 0.5em; }
+    #fixed > #controls #layout > #jump > a {
+      display: inline-block;
+      padding: 1em; }
+      #fixed > #controls #layout > #jump > a:hover {
+        background: blue;
+        color: white; }
+  #fixed > header {
+    padding: 0.5em;
+    text-align: center; }
+    #fixed > header > h1 {
+      margin: 0;
+      padding: 0;
+      font-size: 1em;
+      font-weight: bold; }
+    #fixed > header > h2 {
+      margin: 0;
+      font-size: 1.5em; }
+  #fixed > #loading {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.95); }
+    #fixed > #loading > label {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.5em;
+      font-weight: bold; }
 
-header {
-  padding: 0.5em;
+body.loading > #fixed > #loading {
+  display: block; }
+body.loading > article {
+  visibility: hidden; }
+
+a.anchor {
+  display: block;
+  height: 15em; }
+
+article > h1 {
+  margin: 1em 0;
+  text-align: center;
+  font-size: 1.5em; }
+article > .toc > header > h1, article > .toc > header > h2, article > .groups > header > h1, article > .groups > header > h2 {
+  margin: 0;
+  padding: 0;
+  font-size: 1.5em;
+  font-weight: bold;
   text-align: center; }
-  header > h1 {
-    margin: 0; }
-
-section > h1 {
-  display: none; }
+article > .toc > header > h2, article > .groups > header > h2 {
+  font-size: 1em; }
+article > .groups > section {
+  border-top: 2px solid black; }
+article > .groups > section > header {
+  display: none;
+  margin-top: 1em; }
+  article > .groups > section > header > h1 {
+    margin: 0;
+    font-size: 1em; }
 
 table {
   width: 100%;
@@ -36,18 +99,23 @@ table {
   border-spacing: 0;
   border-collapse: collapse; }
 
+tr {
+  display: none; }
+
 td {
   width: 50%;
   padding: 0 0.5em;
-  word-break: break-all; }
+  word-break: break-word; }
   td.index {
     width: 3em; }
   td.id {
     width: 18em; }
   td.dates {
     width: 14em; }
+  td.parties {
+    width: 8em; }
   td.status {
-    width: 5em; }
+    width: 8em; }
   td.link {
     width: 18em; }
   td.debug {
@@ -56,27 +124,20 @@ td {
 span.warn {
   font-family: monospace; }
 
-body.colors section > table > tr[data-parties^="DPP"] {
+body.color table > tr[data-parties^="DPP"] {
   background: rgba(0, 255, 0, 0.2); }
-body.colors section > table > tr[data-parties^="TSU"] {
+body.color table > tr[data-parties^="TSU"] {
   background: rgba(139, 69, 19, 0.2); }
-body.colors section > table > tr[data-parties^="KMT"] {
+body.color table > tr[data-parties^="KMT"] {
   background: rgba(0, 0, 255, 0.2); }
-body.colors section > table > tr[data-parties^="PFP"] {
+body.color table > tr[data-parties^="PFP"] {
   background: rgba(255, 140, 0, 0.2); }
-body.colors section > table > tr[data-parties^="GOV"] {
+body.color table > tr[data-parties^="GOV"] {
   background: rgba(0, 0, 0, 0.1); }
 
-body.sectionTitles section > h1 {
+body.groupHeader .groups > section > header {
   display: block; }
-
-body.dataOnly {
-  margin-top: 1.6em; }
-  body.dataOnly nav > :not(#layout) {
-    display: none; }
-  body.dataOnly header {
-    display: none; }
-  body.dataOnly section > h1 {
-    display: none; }
+body.groupHeader .groups > section {
+  border: none; }
 
 /*# sourceMappingURL=style.css.map */

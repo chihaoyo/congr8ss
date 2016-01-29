@@ -1,16 +1,16 @@
 var Proposal = function(data) {
   this.original = {
-    bill: data.billName.trim()
-      .replace(/，請審議案。/g, '')
-      .replace(/，請查照審議。/g, '')
-      .replace(/案。/g, '')
-      .replace(/。/g, ''),
+    title: data.billName.trim(),
     proposers: (data.billProposer ? data.billProposer.trim() : null),
     org: data.billOrg.trim(),
   };
+  this.title = this.original.title
+    .replace(/，請審議案。/g, '')
+    .replace(/，請查照審議。/g, '')
+    .replace(/案。/g, '')
+    .replace(/。/g, '');
   this.meetingID = new MeetingID(data.term, data.sessionPeriod, data.sessionTimes, data.meetingTimes);
   this.documentURL = (data.pdfUrl != null ? data.pdfUrl : (data.docUrl != null ? data.docUrl : null));
-  this.documentBaseName = this.id = this.documentURL.match(/\/(([^/]+)\.(pdf|doc))/)[1];
 /*
   this.id = (this.documentURL != null ? this.documentURL.match(/\/([^/]+)\.(pdf|doc)/)[1] : null);
   if(this.documentURL == null)
@@ -183,10 +183,11 @@ Proposal.prototype.lookupMeetings = function() {
       }
     }
   }
-  this.meetingDates = Utility.abbreviateDates(this.meetingDates);
+  //this.meetingDates = Utility.abbreviateDates(this.meetingDates);
+  this.firstDate = this.meetingDates[0];
 }
 Proposal.prototype.toString = function() {
-  return this.original.bill;
+  return this.title;
 };
 Proposal.prototype.toRow = function(i) {
   return '<tr data-parties="' + this.parties.join(' ') + '" data-status="' + this.statusCode + '">' +
@@ -194,14 +195,15 @@ Proposal.prototype.toRow = function(i) {
     '<td class="id">' + this.id + '</td>' +
     //'<td class="debug">' + this.meetingID.numericID + '</td>' +
     //'<td class="debug">' + (this.warning ? this.warning : '') + this.meetingFullInfo.join(';') + '</td>' +
-    '<td class="dates">' + (this.warning ? this.warning : '') + this.meetingDates.join(',') + '</td>' +
-    //'<td>' + this.bills.join(',') + '</td>' +
-    '<td class="debug">' + this.original.bill + '</td>' +
-    '<td class="debug">' + this.requestInfo + '</td>' +
+    '<td class="dates">' + (this.warning ? this.warning : '') + (this.meetingDates.length > 0 ? this.meetingDates[0] : '') + '</td>' +
+    '<td>' + this.title + '</td>' +
+    '<td>' + this.bills.join(',') + '</td>' +
+    //'<td class="debug">' + this.requestInfo + '</td>' +
     //'<td class="debug">' + this.original.proposers + ';' + this.original.org + '</td>' +
     '<td>' + this.proposers.join(',') + '</td>' +
+    '<td class="parties">' + this.parties.join(',') + '</td>' +
     '<td class="status">' + this.status + '</td>' +
-    '<td class="link"><a href="' + this.documentURL + '" target="_blank">' + this.documentBaseName + '</a></td>' +
+    '<td class="link"><a href="' + this.documentURL + '" target="_blank">' + Utility.fileName(this.documentURL) + '</a></td>' +
   '</tr>';
 };
 Proposal.loader = function(url, callback) {
@@ -209,7 +211,8 @@ Proposal.loader = function(url, callback) {
     data = data.jsonList;
     for(var item of data) {
       var proposal = new Proposal(item);
-      proposals[proposal.id] = proposal;
+      if(proposal.id != '1021220070200100-08-04-00-17') // error
+        proposals[proposal.id] = proposal;
     }
     callback(null); // necessary for queue.js to work
   });

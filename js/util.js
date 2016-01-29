@@ -1,20 +1,37 @@
 var Utility = {};
-Utility.unique = function(list, key, needle) {
+// find unique values of cols in rows of list
+/*
+options
+- needle: values will contain needle
+- array: return array of values only
+- count: return counts
+*/
+Utility.unique = function(list, ids, col, options) {
+  options = options || {};
   var dict = {};
-  for(var i in list) {
-    var x = list[i];
-    var vals = x[key];
-    if(vals == null)
+  for(var id of ids) {
+    var row = list[id];
+    var vals = row[col];
+    if(vals === undefined || vals == null)
       continue;
-    if(!Array.isArray(vals))
-      vals = [vals];
 
+    vals = (Array.isArray(vals) ? vals : [vals]);
     //console.log(vals);
-    for(var val of vals)
-      if(val != null && (needle === undefined || val.indexOf(needle) != -1))
-        dict[val] = true;
+    for(var val of vals) {
+      if(val != null && (options.needle === undefined || val.indexOf(options.needle) != -1)) {
+        //dict[val] = true;
+        dict[val] = (dict[val] === undefined ? (options.count ? 0 : []) : dict[val]);
+        if(options.count)
+          dict[val]++;
+        else
+          dict[val].push(id);
+      }
+    }
   }
-  return Object.keys(dict);
+  if(options.array) {
+    dict = Object.keys(dict);
+  }
+  return dict;
 };
 //http://stackoverflow.com/questions/15478954/sort-array-elements-string-with-numbers-natural-sort
 Utility.naturalSort = function(a, b) {
@@ -47,12 +64,15 @@ Utility.abbreviateDates = function(dates) {
 
   dates.sort();
   dates = dates.map(function(d) { return d.split('-'); }); // 分開
-
-  for(var g = 0; g < 3; g++) { // scan three times from year down to day
-    var current = dates[0][g];
-    for(var i = 1; i < dates.length; i++) {
-      if(dates[i][g] == current) {
-        dates[i][g] = undefined; // remove value but retain array index
+  var current = dates[0].slice(0); // clone
+  for(var i = 1; i < dates.length; i++) {
+    for(var j = 0; j < 3; j++) {
+      if(dates[i][j] == current[j]) {
+        dates[i][j] = undefined;
+      }
+      else {
+        current[j] = dates[i][j];
+        break;
       }
     }
   }
@@ -91,32 +111,12 @@ Utility.parseChineseNumeral = function(n0) { // only good for less than 10,000
   return sum;
 };
 Utility.WARN = '<span class="warn">⚠️</span>'
-
-Utility.printProposalsInSection = function(dict) {
-  var totalCount = 0;
-  for(var title in dict) {
-    totalCount += dict[title].length;
-  }
-  console.log(totalCount, 'rows to print');
-
-  for(var title in dict) {
-    var pids = dict[title];
-    var $section = $('<section>').append('<h1>' + title + '</h1>')
-    var $table = $('<table class="proposals">');
-    for(var i = 0; i < pids.length; i++) {
-      $table.append(proposals[pids[i]].toRow(i + 1));
-    }
-    $section.append($table);
-    $body.append($section);
-  }
-};
-
 Utility.PARTYCODE = {
   'KMT': ['國民黨', '中國國民黨'],
   'DPP': ['民進黨', '民主進步黨'],
   'PFP': ['親民黨'],
   'TSU': ['台聯','台灣團結聯盟'],
-  'NAG': ['新聯盟','無黨團結聯盟','民國黨'],
+  'NAC': ['新聯盟','無黨團結聯盟','民國黨'],
   'GOV': ['行政院', '司法院', '考試院', '監察院', '本院教育及文化委員會', '教育部'],
 };
 Utility.PARTYNAME = {};
@@ -143,3 +143,96 @@ for(var code in Utility.STATUSCODE) {
   var name = Utility.STATUSCODE[code];
   Utility.STATUSNAME[name] = code;
 }
+
+Utility.groupProposals = function(keyIdentifier, keygen, printTOC, printGroups) {
+  // make dict
+  var dict = {}, keys;
+  for(var pid in proposals) {
+    keys = keygen(pid);
+    keys = (Array.isArray(keys) ? keys : [keys]);
+    for(var key of keys) {
+      dict[key] = (dict[key] === undefined ? [] : dict[key]);
+      dict[key].push(pid);
+    }
+  }
+
+  // make groups
+  groups = [], group, status;
+  for(var key in dict) {
+    var ids = dict[key];
+    groups.push({
+      key: key,
+      ids: ids,
+      dates: Utility.abbreviateDates(Utility.unique(proposals, ids, 'firstDate', {array: true})),
+      titles: Utility.unique(proposals, ids, 'title', {array: true}),
+      bills: Utility.unique(proposals, ids, 'bills', {array: true}),
+      parties: Utility.unique(proposals, ids, 'parties', {array: true}),
+      proposers: Utility.unique(proposals, ids, 'proposers', {array: true}),
+      statusCount: Utility.unique(proposals, ids, 'status', {count: true}),
+      documentURLs: Utility.unique(proposals, ids, 'documentURL', {array: true}),
+    });
+  }
+
+  // count rows
+  var rowCount = 0;
+  for(var group of groups) {
+    rowCount += group.ids.length;
+  }
+  console.log(rowCount, 'rows');
+
+  // some variables
+  var $article, $toc, $table, $header, $table, $groups, group;
+  // DOM
+  $article = $('<article id="' + keyIdentifier + '">').appendTo($body);
+  // TOC
+  if(printTOC) {
+    $toc = $('<div class="toc">').appendTo($article);
+    $('<a class="anchor" name="' + keyIdentifier + '-toc"></a></div>').appendTo($toc);
+    $('<header><h1>' + keyIdentifier + '<h1><h2>TOC</h2></header>').appendTo($toc);
+    $table = $('<table>').appendTo($toc);
+    for(var g = 0; g < groups.length; g++) {
+      group = groups[g];
+      $('<tr data-parties="' + group.parties.join(' ') + '">' +
+        '<td class="index">' + 'g' + (g + 1) + '</td>' +
+        '<td>' + group.dates.join(',') + '</td>' +
+        '<td>' + group.titles.join(',') + '</td>' +
+        '<td>' + group.bills.join(',') + '</td>' +
+        '<td>' + group.proposers.join(',') + '</td>' +
+        '<td class="parties">' + group.parties.join(',') + '</td>' +
+        '<td class="status">' + Utility.objectJoin(group.statusCount) + '</td>' +
+        '<td class="link">' + group.documentURLs.map(function(url) {
+          return '<a href="' + url + '" target="_blank">' + Utility.fileName(url) + '</a>';
+        }).join(',') + '</td>' +
+      '</tr>').appendTo($table);
+    }
+  }
+  // groups
+  if(printGroups) {
+    $groups = $('<div class="groups"></div>').appendTo($article);
+    $('<a class="anchor" name="' + keyIdentifier + '-groups"></a>').appendTo($groups);
+    $('<header><h1>' + keyIdentifier + '<h1><h2>Groups</h2></header>').appendTo($groups);
+    for(var g = 0; g < groups.length; g++) {
+      group = groups[g];
+      $group = $('<section>').appendTo($groups);
+      $header = $('<header>').append('<label>' + 'g' + (g + 1) + '</labe>').append('<h1>' + group.key + '</h1>').appendTo($group);
+      //$('<div class="titles">' + group.titles.join(',') + '</div>').appendTo($header);
+      $('<div class="proposers">' + group.proposers.join(',') + '</div>').appendTo($header);
+      $('<div class="parties">' + group.parties.join(',') + '</div>').appendTo($header);
+      $('<div class="statusCount">' + Utility.objectJoin(group.statusCount) + '</div>').appendTo($header);
+
+      $table = $('<table class="proposals">').appendTo($group);
+      for(var i = 0; i < group.ids.length; i++) {
+        $table.append(proposals[group.ids[i]].toRow(i + 1));
+      }
+    }
+  }
+}
+
+Utility.objectJoin = function(obj) {
+  return Object.keys(obj).map(function(v) {
+    return v + ':' + obj[v];
+  }).join(',')
+};
+Utility.fileName = function(url) {
+  return url.match(/\/(([^/]+)\.(pdf|doc))/)[1];
+};
