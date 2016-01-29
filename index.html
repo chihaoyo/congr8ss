@@ -58,14 +58,6 @@ $(function() {
     var $this = $(this);
     $body.toggleClass($this.attr('id'), $this.prop('checked'));
   };
-  for(var party in Utility.PARTYCODE) {
-    $('<input type="checkbox" id="' + party + '" checked/>')
-      .change(changeHandler)
-      .add('<label for="' + party + '">' + Utility.PARTYCODE[party] + '</label>')
-      .appendTo($partyFilter);
-    stylesForFilter += 'body.' + party + ' tr[data-parties~="' + party + '"] { display: table-row; }' + '\n';
-    $body.addClass(party);
-  }
   for(var status in Utility.STATUSCODE) {
     $('<input type="checkbox" id="' + status + '" checked/>')
       .change(changeHandler)
@@ -73,6 +65,14 @@ $(function() {
       .appendTo($statusFilter);
     stylesForFilter += 'body.' + status + ' tr[data-status~="' + status + '"] { display: table-row; }' + '\n';
     $body.addClass(status);
+  }
+  for(var party in Utility.PARTYCODE) {
+    $('<input type="checkbox" id="' + party + '" checked/>')
+      .change(changeHandler)
+      .add('<label for="' + party + '">' + Utility.PARTYCODE[party] + '</label>')
+      .appendTo($partyFilter);
+    stylesForFilter += 'body.' + party + ' tr[data-parties~="' + party + '"] { display: table-row; }' + '\n';
+    $body.addClass(party);
   }
   styleEl = document.createElement('style');
   styleEl.type = 'text/css';
