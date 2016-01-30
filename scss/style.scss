@@ -1,4 +1,4 @@
-body, div, td {
+body {
   margin: 0;
   font-family: 'Source Code Pro', 'PingFang TC', 'Noto Sans CJK TC', monospace;
   font-size: 11px;
@@ -160,8 +160,9 @@ td {
     color: #aaa;
   }
 }
+// https://gist.github.com/mfornos/9991865
 span.warn {
-  font-family: monospace;
+  font-family: 'Apple Color Emoji', 'Android Emoji', 'Segoe UI', EmojiSymbols, Symbola;
 }
 body.color {
   table > tr {
