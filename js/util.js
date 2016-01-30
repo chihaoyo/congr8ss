@@ -125,13 +125,13 @@ for(var code in Utility.PARTYCODE) {
     Utility.PARTYNAME[name] = code;
 }
 Utility.STATUSCODE = {
-  'Scheduled': '排入程序',
-  'ReturnToProgramCommittee': '退回程序',
-  'CommitteeWillExamine': '交付審查',
-  'CommitteeDoneExamine': '審查完畢',
+  'PCScheduled': '排入程序',
+  'ReturnToPC': '退回程序',
+  'CWillExamine': '交付審查',
+  'CDoneExamine': '審查完畢',
   'WillR2': '逕付二讀',
-  'SkipCommitteeAndWillR2': '逕付二讀:委員會抽出',
-  'ScheduledForGeneralAssembly': '排入院會',
+  'WillR2FromC': '逕付二讀:委員會抽出',
+  'GAScheduled': '排入院會',
   'R2': '二讀',
   'R3': '三讀',
   'Withdrawn': '撤案',
