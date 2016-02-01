@@ -76,20 +76,20 @@ article > h1 {
   margin: 1em 0;
   text-align: center;
   font-size: 1.5em; }
-article > .toc > header > h1, article > .toc > header > h2, article > .groups > header > h1, article > .groups > header > h2 {
+article > .tab > header > h1, article > .tab > header > h2 {
   margin: 0;
   padding: 0;
   font-size: 1.5em;
   font-weight: bold;
   text-align: center; }
-article > .toc > header > h2, article > .groups > header > h2 {
+article > .tab > header > h2 {
   font-size: 1em; }
-article > .groups > section {
-  border-top: 2px solid black; }
-article > .groups > section > header {
+article > .tab.groups > section {
+  margin-top: 2px; }
+article > .tab.groups > section > header {
   display: none;
   margin-top: 1em; }
-  article > .groups > section > header > h1 {
+  article > .tab.groups > section > header > h1 {
     margin: 0;
     font-size: 1em; }
 
@@ -108,18 +108,14 @@ td {
   word-break: break-word; }
   td.index {
     width: 3em; }
-  td.id {
-    width: 18em; }
-  td.dates {
-    width: 14em; }
   td.parties {
     width: 8em; }
   td.status {
     width: 8em; }
-  td.link {
-    width: 18em; }
   td.debug {
     color: #aaa; }
+  td.key {
+    font-weight: bold; }
 
 span.warn {
   font-family: 'Apple Color Emoji', 'Android Emoji', 'Segoe UI', EmojiSymbols, Symbola; }
@@ -134,10 +130,5 @@ body.color table > tr[data-parties^="PFP"] {
   background: rgba(255, 140, 0, 0.2); }
 body.color table > tr[data-parties^="GOV"] {
   background: rgba(0, 0, 0, 0.1); }
-
-body.groupHeader .groups > section > header {
-  display: block; }
-body.groupHeader .groups > section {
-  border: none; }
 
 /*# sourceMappingURL=style.css.map */

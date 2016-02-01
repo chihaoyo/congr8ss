@@ -144,7 +144,7 @@ for(var code in Utility.STATUSCODE) {
   Utility.STATUSNAME[name] = code;
 }
 
-Utility.groupProposals = function(keyIdentifier, keygen, printTOC, printGroups) {
+Utility.groupProposals = function(keyDescriptor, keygen, printTOC, printGroups) {
   // make dict
   var dict = {}, keys;
   for(var pid in proposals) {
@@ -183,17 +183,18 @@ Utility.groupProposals = function(keyIdentifier, keygen, printTOC, printGroups) 
   // some variables
   var $article, $toc, $table, $header, $table, $groups, group;
   // DOM
-  $article = $('<article id="' + keyIdentifier + '">').appendTo($body);
+  $article = $('<article id="' + keyDescriptor + '">').appendTo($body);
   // TOC
   if(printTOC) {
-    $toc = $('<div class="toc">').appendTo($article);
-    $('<a class="anchor" name="' + keyIdentifier + '-toc"></a></div>').appendTo($toc);
-    $('<header><h1>' + keyIdentifier + '<h1><h2>TOC</h2></header>').appendTo($toc);
+    $toc = $('<div class="tab toc">').appendTo($article);
+    $('<a class="anchor" name="' + keyDescriptor + '-toc"></a></div>').appendTo($toc);
+    $('<header><h1>' + keyDescriptor + '<h1><h2>TOC</h2></header>').appendTo($toc);
     $table = $('<table>').appendTo($toc);
     for(var g = 0; g < groups.length; g++) {
       group = groups[g];
       $('<tr data-parties="' + group.parties.join(' ') + '">' +
         '<td class="index">' + 'g' + (g + 1) + '</td>' +
+        '<td class="key">' + group.key + '</td>' +
         '<td>' + group.dates.join(',') + '</td>' +
         '<td>' + group.titles.join(',') + '</td>' +
         '<td>' + group.bills.join(',') + '</td>' +
@@ -208,21 +209,23 @@ Utility.groupProposals = function(keyIdentifier, keygen, printTOC, printGroups) 
   }
   // groups
   if(printGroups) {
-    $groups = $('<div class="groups"></div>').appendTo($article);
-    $('<a class="anchor" name="' + keyIdentifier + '-groups"></a>').appendTo($groups);
-    $('<header><h1>' + keyIdentifier + '<h1><h2>Groups</h2></header>').appendTo($groups);
+    $groups = $('<div class="tab groups"></div>').appendTo($article);
+    $('<a class="anchor" name="' + keyDescriptor + '-groups"></a>').appendTo($groups);
+    $('<header><h1>' + keyDescriptor + '<h1><h2>Groups</h2></header>').appendTo($groups);
     for(var g = 0; g < groups.length; g++) {
       group = groups[g];
       $group = $('<section>').appendTo($groups);
+/*
       $header = $('<header>').append('<label>' + 'g' + (g + 1) + '</labe>').append('<h1>' + group.key + '</h1>').appendTo($group);
+      $('<div class="count">' + group.ids.length + ' ' + 'proposal' + (group.ids.length > 1 ? 's' : '') + '</div>').appendTo($header);
       $('<div class="titles">' + group.titles.join(',') + '</div>').appendTo($header);
       $('<div class="proposers">' + group.proposers.join(',') + '</div>').appendTo($header);
       $('<div class="parties">' + group.parties.join(',') + '</div>').appendTo($header);
-      $('<div class="statusCount">' + Utility.objectJoin(group.statusCount) + '</div>').appendTo($header);
+      $('<div class="statusCount">' + Utility.objectJoin(group.statusCount) + '</div>').appendTo($header);*/
 
       $table = $('<table class="proposals">').appendTo($group);
       for(var i = 0; i < group.ids.length; i++) {
-        $table.append(proposals[group.ids[i]].toRow(i + 1));
+        $table.append(proposals[group.ids[i]].toRow(g+1, group.key, i+1));
       }
     }
   }

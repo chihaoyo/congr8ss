@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>法律提案・congr8ss</title>
+  <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro:500,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body class="loading color groupHeader">
+  <div id="fixed">
+    <header>
+      <h1>congr8ss</h1>
+      <h2>法律提案</h2>
+    </header>
+    <nav>
+      <div id="controls">
+        <div id="partyFilter"></div>
+        <div id="statusFilter"></div>
+        <div id="layout">
+          <input type="checkbox" id="color" checked/><label for="color">color</label>
+          <input type="checkbox" id="groupHeader" checked/><label for="groupHeader">groupHeader</label>
+        </div>
+      </div>
+    </nav>
+    <div id="loading"><label>讀取中⋯</label></div>
+  </div>
+</body>
+<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js"></script>
+<script src="js/Proposer.js"></script>
+<script src="js/Meeting.js"></script>
+<script src="js/Proposal.js"></script>
+<script src="js/util.js"></script>
+<script src="js/tabs.js"></script>

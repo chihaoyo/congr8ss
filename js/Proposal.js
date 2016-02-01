@@ -189,13 +189,15 @@ Proposal.prototype.lookupMeetings = function() {
 Proposal.prototype.toString = function() {
   return this.title;
 };
-Proposal.prototype.toRow = function(i) {
+Proposal.prototype.toRow = function(g, gDescriptor, i) {
   return '<tr data-parties="' + this.parties.join(' ') + '" data-status="' + this.statusCode + '">' +
+    '<td class="index">' + 'g' + g + '</td>' +
+    '<td class="key">' + gDescriptor + '</td>' +
     '<td class="index">' + i + '</td>' +
     '<td class="id">' + this.id + '</td>' +
     //'<td class="debug">' + this.meetingID.numericID + '</td>' +
     //'<td class="debug">' + (this.warning ? this.warning : '') + this.meetingFullInfo.join(';') + '</td>' +
-    '<td class="dates">' + (this.warning ? this.warning : '') + (this.meetingDates.length > 0 ? this.meetingDates[0] : '') + '</td>' +
+    '<td class="dates">' + (this.warning ? this.warning : '') + (this.firstDate ? this.firstDate.replace('-', '/') : '') + '</td>' +
     '<td>' + this.title + '</td>' +
     '<td>' + this.bills.join(',') + '</td>' +
     //'<td class="debug">' + this.requestInfo + '</td>' +

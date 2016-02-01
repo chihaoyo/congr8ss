@@ -6,7 +6,7 @@
   <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro:500,700' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="css/style.css"/>
 </head>
-<body class="loading color groupHeader">
+<body class="loading color">
   <div id="fixed">
     <header>
       <h1>congr8ss</h1>
@@ -17,7 +17,6 @@
       <div id="statusFilter"></div>
       <div id="layout">
         <input type="checkbox" id="color" checked/><label for="color">color</label>
-        <input type="checkbox" id="groupHeader" checked/><label for="groupHeader">groupHeader</label>
         <div id="jump"></div>
       </div>
     </div>
@@ -115,17 +114,6 @@ var main = function() {
     proposals[pid].lookupMeetings();
   }
 
-  // group proposals by bills
-  /*
-  Utility.printProposalsInKeyGroups(function(pid) {
-    return proposals[pid].bills;
-  });*/
-
-  // print proposals in groups
-  /*
-  Utility.printProposalsInKeyGroups(function(pid) {
-    return proposals[pid].proposers;
-  });*/
   Utility.groupProposals('byDocumentURL', function(p) {
     return proposals[p].documentURL;
   }, true, true);
@@ -135,7 +123,7 @@ var main = function() {
 
   $('a.anchor').each(function() {
     var name = $(this).attr('name');
-    $jump.append('<a href="#' + name + '">' + name + '</a>');
+    $('<a href="#' + name + '">' + name + '</a>').appendTo($jump);
   });
 
   $body.removeClass('loading');

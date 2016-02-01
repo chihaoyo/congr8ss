@@ -93,7 +93,7 @@ article {
     text-align: center;
     font-size: 1.5em;
   }
-  > .toc, > .groups {
+  > .tab {
     > header {
       > h1, > h2 {
         margin: 0;
@@ -107,9 +107,9 @@ article {
       }
     }
   }
-  > .groups {
+  > .tab.groups {
     > section {
-      border-top: 2px solid black;
+      margin-top: 2px;
     }
     > section > header {
       display: none;
@@ -142,10 +142,10 @@ td {
     width: 3em;
   }
   &.id {
-    width: 18em;
+    //width: 18em;
   }
   &.dates {
-    width: 14em;
+    //width: 14em;
   }
   &.parties {
     width: 8em;
@@ -154,10 +154,13 @@ td {
     width: 8em;
   }
   &.link {
-    width: 18em;
+    //width: 18em;
   }
   &.debug {
     color: #aaa;
+  }
+  &.key {
+    font-weight: bold;
   }
 }
 // https://gist.github.com/mfornos/9991865
@@ -182,8 +185,4 @@ body.color {
       background: rgba(black, 0.1);
     }
   }
-}
-body.groupHeader {
-  .groups > section > header { display: block; }
-  .groups > section { border: none; }
 }
